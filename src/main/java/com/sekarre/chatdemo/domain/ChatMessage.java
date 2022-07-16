@@ -1,11 +1,11 @@
 package com.sekarre.chatdemo.domain;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,9 +26,8 @@ public class ChatMessage {
     @ManyToOne(cascade = CascadeType.MERGE)
     private User sender;
 
-    @NotNull
-    @CreatedDate
-    private LocalDate sendDate;
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "chat_id")

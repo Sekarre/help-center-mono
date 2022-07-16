@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello WebSocket</title>
+    <title>Public chat</title>
 <!--    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="C:\Users\admin\Desktop\Spring\chatDemo\src\main\resources\client\app.js"></script>
-    <script src="C:\Users\admin\Desktop\Spring\chatDemo\src\main\resources\client\stomp.js"></script>
+    <script src="C:\Users\admin\Desktop\Spring\chatDemo\src\main\resources\client-public\app.js"></script>
+    <script src="C:\Users\admin\Desktop\Spring\chatDemo\src\main\resources\client-public\stomp.js"></script>
 
 </head>
 <body>
@@ -28,7 +28,7 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="name">What is your name?</label>
+                    <label for="name">Insert message</label>
                     <input type="text" id="name" class="form-control" placeholder="Your message here...">
                 </div>
                 <button id="send" class="btn btn-default" type="submit">Send</button>
@@ -40,7 +40,7 @@
             <table id="conversation" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Greetings</th>
+                    <th>Messages</th>
                 </tr>
                 </thead>
                 <tbody id="greetings">

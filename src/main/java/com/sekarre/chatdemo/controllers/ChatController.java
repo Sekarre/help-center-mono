@@ -1,31 +1,27 @@
 package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
-import com.sekarre.chatdemo.domain.ChatMessage;
+import com.sekarre.chatdemo.services.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
+@RequestMapping(value = "/api/chat-info")
 public class ChatController {
 
-//    @MessageMapping("/chat.test")
-//    @SendTo("/topic/public/{roomId}")
-//    public ChatMessage getMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
-//        return chatMessage;
-//    }
+    private final ChatService chatService;
 
-    @MessageMapping("/chat-room")
-    @SendTo("/room/private")
-    public ChatMessageDTO getMessage(@Payload ChatMessageDTO chatMessageDTO) {
-        log.debug(chatMessageDTO.getMessage());
-        return chatMessageDTO;
+    @GetMapping("/{chatId}")
+    public List<ChatMessageDTO> getAllChatMessages(@PathVariable Long chatId) {
+        return chatService.getAllChatMessages(chatId);
     }
 }

@@ -1,4 +1,6 @@
 var stompClient = null;
+var channelId = "Test2";
+var tempUserId = Math.floor(Math.random() * 1000);
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -18,7 +20,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/room/private', function (chatMessage) {
+        stompClient.subscribe('/room/private/' + channelId, function (chatMessage) {
             showChatMessage(JSON.parse(chatMessage.body).message);
         });
     });
@@ -33,7 +35,7 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send("/chat-app/chat-room", {}, JSON.stringify({'message': $("#name").val()}));
+    stompClient.send("/chat-app/private-chat-room/" + channelId, {}, JSON.stringify({'senderId': tempUserId, 'message': $("#name").val()}));
 }
 
 function showChatMessage(message) {
