@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public abstract class ChatMessageMapper {
 
     @Mapping(target = "senderId", source = "chatMessage.sender.id")
+    @Mapping(target = "senderName", source = "chatMessage.sender.name")
     public abstract ChatMessageDTO mapMessageToChatMessageDTO(ChatMessage chatMessage);
 
     public abstract ChatMessage mapChatMessageDTOToMessage(ChatMessageDTO chatMessageDTO);

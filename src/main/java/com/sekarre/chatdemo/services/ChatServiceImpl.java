@@ -35,6 +35,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatMessageDTO savePrivateChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
         log.debug(chatMessageDTO.toString());
+
         //Todo: wyciagnac uzytkownika z kontekstu springa
 
         ChatMessage chatMessage = chatMessageMapper.mapChatMessageDTOToMessage(chatMessageDTO);

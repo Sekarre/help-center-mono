@@ -1,5 +1,7 @@
 package com.sekarre.chatdemo.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sekarre.chatdemo.util.DateUtil;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -18,6 +20,11 @@ public class ChatMessageDTO {
     private String message;
 
     private Long senderId;
+
+    private String senderName;
+
+    @JsonFormat(pattern= DateUtil.DATE_TIME_FORMAT)
     private LocalDateTime createdDateTime;
+
     private List<Long> readByIds;
 }
