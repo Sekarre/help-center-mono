@@ -1,4 +1,4 @@
-package com.sekarre.chatdemo.services;
+package com.sekarre.chatdemo.services.impl;
 
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.domain.Chat;
@@ -6,6 +6,8 @@ import com.sekarre.chatdemo.domain.ChatMessage;
 import com.sekarre.chatdemo.mappers.ChatMessageMapper;
 import com.sekarre.chatdemo.repositories.ChatMessageRepository;
 import com.sekarre.chatdemo.repositories.ChatRepository;
+import com.sekarre.chatdemo.services.ChatService;
+import com.sekarre.chatdemo.util.UserDetailsHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,10 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatMessageMapper chatMessageMapper;
 
+    //todo: just for test, can be deleted
     @Override
     public ChatMessageDTO saveChatMessage(ChatMessageDTO chatMessageDTO) {
         log.debug(chatMessageDTO.toString());
-
-        //Todo: wyciagnac uzytkownika z kontekstu springa
 
         return chatMessageMapper.mapMessageToChatMessageDTO(
                 chatMessageRepository.save(chatMessageMapper.mapChatMessageDTOToMessage(chatMessageDTO)));
@@ -36,13 +37,17 @@ public class ChatServiceImpl implements ChatService {
     public ChatMessageDTO savePrivateChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
         log.debug(chatMessageDTO.toString());
 
-        //Todo: wyciagnac uzytkownika z kontekstu springa
+        ChatMessage chatMessage = createNewChatMessage(chatMessageDTO, channelId);
 
+        return chatMessageMapper.mapMessageToChatMessageDTO(chatMessageRepository.save(chatMessage));
+    }
+
+    private ChatMessage createNewChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
         ChatMessage chatMessage = chatMessageMapper.mapChatMessageDTOToMessage(chatMessageDTO);
         Chat chat = getChatById(channelId);
         chatMessage.setChat(chat);
-
-        return chatMessageMapper.mapMessageToChatMessageDTO(chatMessageRepository.save(chatMessage));
+        chatMessage.setSender(UserDetailsHelper.getCurrentUser());
+        return chatMessage;
     }
 
     private Chat getChatById(String channelId) {

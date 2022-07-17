@@ -1,6 +1,8 @@
 package com.sekarre.chatdemo.listeners;
 
+import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.util.ChatMessageBotFactory;
+import com.sekarre.chatdemo.util.UserDetailsHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -27,19 +29,19 @@ public class ChatListener {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         final String destination = destinationTracker.get(headers.getSessionId());
         log.debug(destination);
+        User currentUser = UserDetailsHelper.getCurrentUser();
         simpMessagingTemplate.convertAndSend(
                 Objects.requireNonNull(destination),
-                ChatMessageBotFactory.getGoodbyeChatMessage("test"));
+                ChatMessageBotFactory.getGoodbyeChatMessage(currentUser.getName() + " " + currentUser.getLastname()));
     }
 
     @EventListener
     public void onConnectEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         destinationTracker.put(headers.getSessionId(), headers.getDestination());
-
-        //todo: zmienic na principala
+        User currentUser = UserDetailsHelper.getCurrentUser();
         simpMessagingTemplate.convertAndSend(
                 Objects.requireNonNull(headers.getDestination()),
-                ChatMessageBotFactory.getWelcomeChatMessage("test"));
+                ChatMessageBotFactory.getWelcomeChatMessage(currentUser.getName() + " " + currentUser.getLastname()));
     }
 }
