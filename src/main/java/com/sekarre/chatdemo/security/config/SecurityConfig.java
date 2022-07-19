@@ -27,16 +27,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/api/v1/auth/login").permitAll()
+                .antMatchers("/api/v1/auth/login", "/chat-app/**", "/room/**", "/websocket/**", "/socket/**").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
-                .and().headers().frameOptions().sameOrigin()
                 .and().cors().and().csrf().disable();
-
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
