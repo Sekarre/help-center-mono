@@ -6,6 +6,8 @@ import com.sekarre.chatdemo.security.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -13,7 +15,7 @@ import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ChannelInterceptorAdapter;
+import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import java.util.Objects;
 
+@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 @Slf4j
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker
@@ -47,15 +50,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptorAdapter() {
+        registration.interceptors(new ChannelInterceptor() {
 
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    String token = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION);
+                    String token = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION).split(" ")[1].trim();
                     log.debug("Header auth token: " + token);
+
+                    if (!jwtTokenUtil.validate(token)) {
+                        return message;
+                    }
 
                     User user = userRepository.findByUsername(jwtTokenUtil.getUsername(token))
                             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -63,6 +70,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             user, null, user.getAuthorities());
 
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                     accessor.setUser(authentication);
                 } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
                     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

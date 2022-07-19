@@ -1,9 +1,9 @@
 package com.sekarre.chatdemo.security.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 @Configuration
 public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
@@ -11,9 +11,11 @@ public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBroker
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-          .simpDestMatchers("/chat-app/**", "/room/**", "/websocket/**").authenticated()
-          .simpSubscribeDestMatchers("/room/**", "/chat-app/**", "/websocket/**").authenticated()
-          .anyMessage().authenticated();
+                .simpDestMatchers("/chat-app/**", "/room/**", "/websocket/**").authenticated()
+                .simpTypeMatchers(SimpMessageType.CONNECT,
+                        SimpMessageType.DISCONNECT, SimpMessageType.OTHER).permitAll()
+                .simpSubscribeDestMatchers("/room/**", "/chat-app/**", "/websocket/**").authenticated()
+                .anyMessage().authenticated();
     }
 
     @Override
