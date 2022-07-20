@@ -27,4 +27,9 @@ public class ChatController {
     public List<ChatMessageDTO> getAllChatMessages(@PathVariable Long chatId) {
         return chatService.getAllChatMessages(chatId);
     }
+
+    @GetMapping
+    public List<String> getChatChannelIds() {
+        return chatService.getChatChannelIds();
+    }
 }

@@ -19,12 +19,6 @@ public class ChatWebSocketController {
 
     private final ChatService chatService;
 
-    @MessageMapping("/chat-room")
-    @SendTo("/room/public")
-    public ChatMessageDTO getMessagePublicChat(@Payload @Valid ChatMessageDTO chatMessageDTO) {
-        return chatService.saveChatMessage(chatMessageDTO);
-    }
-
     @MessageMapping("/private-chat-room/{channelId}")
     @SendTo("/room/private/{channelId}")
     public ChatMessageDTO getMessagePrivateChat(@Payload @Valid ChatMessageDTO chatMessageDTO,

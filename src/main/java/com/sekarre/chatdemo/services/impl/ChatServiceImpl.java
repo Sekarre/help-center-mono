@@ -24,14 +24,6 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatMessageMapper chatMessageMapper;
 
-    //todo: just for test, can be deleted
-    @Override
-    public ChatMessageDTO saveChatMessage(ChatMessageDTO chatMessageDTO) {
-        log.debug(chatMessageDTO.toString());
-
-        return chatMessageMapper.mapMessageToChatMessageDTO(
-                chatMessageRepository.save(chatMessageMapper.mapChatMessageDTOToMessage(chatMessageDTO)));
-    }
 
     @Override
     public ChatMessageDTO savePrivateChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
@@ -59,6 +51,13 @@ public class ChatServiceImpl implements ChatService {
     public List<ChatMessageDTO> getAllChatMessages(Long chatId) {
         return chatMessageRepository.findAllByChatIdOrderByCreatedDateTime(chatId).stream()
                 .map(chatMessageMapper::mapMessageToChatMessageDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getChatChannelIds() {
+        return chatRepository.findAll().stream()
+                .map(Chat::getChannelId)
                 .collect(Collectors.toList());
     }
 }
