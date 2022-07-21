@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = {"id", "username", "name", "lastname"})
 public class User implements UserDetails, CredentialsContainer {
 
     @Id

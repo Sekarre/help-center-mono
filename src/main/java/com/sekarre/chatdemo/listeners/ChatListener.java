@@ -2,6 +2,7 @@ package com.sekarre.chatdemo.listeners;
 
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.exceptions.WebSocketAuthenticationException;
+import com.sekarre.chatdemo.services.UserAuthorizationService;
 import com.sekarre.chatdemo.util.ChatMessageBotFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,12 @@ public class ChatListener {
 
     private final Map<String, String> destinationTracker = new HashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final UserAuthorizationService userAuthorizationService;
 
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         final String destination = destinationTracker.get(headers.getSessionId());
-        log.debug(destination);
         User user = getUserFromHeaders(headers);
         simpMessagingTemplate.convertAndSend(
                 Objects.requireNonNull(destination),
@@ -40,11 +41,17 @@ public class ChatListener {
     @EventListener
     public void onConnectEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        destinationTracker.put(headers.getSessionId(), headers.getDestination());
         User user = getUserFromHeaders(headers);
+        userAuthorizationService.checkIfUserIsAuthorizedToJoinChannel(user, getChannelIdFromDestination(headers.getDestination()));
+        destinationTracker.put(headers.getSessionId(), headers.getDestination());
         simpMessagingTemplate.convertAndSend(
                 Objects.requireNonNull(headers.getDestination()),
                 ChatMessageBotFactory.getWelcomeChatMessage(user.getName() + " " + user.getLastname()));
+    }
+
+    private String getChannelIdFromDestination(String destination) {
+        String[] splitDest = destination.split("/");
+        return splitDest[splitDest.length - 1];
     }
 
     private User getUserFromHeaders(SimpMessageHeaderAccessor headers) {

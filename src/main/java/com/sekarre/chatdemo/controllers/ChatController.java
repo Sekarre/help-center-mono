@@ -4,10 +4,8 @@ import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.services.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,12 +22,23 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/{chatId}")
-    public List<ChatMessageDTO> getAllChatMessages(@PathVariable Long chatId) {
-        return chatService.getAllChatMessages(chatId);
+    public ResponseEntity<List<ChatMessageDTO>> getAllChatMessages(@PathVariable Long chatId) {
+        return ResponseEntity.ok(chatService.getAllChatMessages(chatId));
+    }
+
+    @PatchMapping("/{channelId}")
+    public ResponseEntity<?> joinChat(@PathVariable String channelId) {
+        chatService.joinChat(channelId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createNewChat() {
+        return ResponseEntity.ok(chatService.createNewChat());
     }
 
     @GetMapping
-    public List<String> getChatChannelIds() {
-        return chatService.getChatChannelIds();
+    public ResponseEntity<List<String>> getChatChannelIds() {
+        return ResponseEntity.ok(chatService.getChatChannelIds());
     }
 }
