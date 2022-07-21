@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CustomErrorMessage {
+
     private String cause;
 
     @JsonFormat(pattern = DateUtil.DATE_TIME_FORMAT)

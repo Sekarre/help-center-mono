@@ -1,12 +1,13 @@
 package com.sekarre.chatdemo.services;
 
+import com.sekarre.chatdemo.DTO.ChatInfoDTO;
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 
 import java.util.List;
 
 public interface ChatService {
 
-    String createNewChat();
+    ChatInfoDTO createNewChat();
 
     void joinChat(String channelId);
 
@@ -14,5 +15,5 @@ public interface ChatService {
 
     List<ChatMessageDTO> getAllChatMessages(Long chatId);
 
-    List<String> getChatChannelIds();
+    List<ChatInfoDTO> getChatChatInfo();
 }

@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.controllers;
 
+import com.sekarre.chatdemo.DTO.ChatInfoDTO;
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.services.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -33,12 +34,12 @@ public class ChatController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewChat() {
+    public ResponseEntity<ChatInfoDTO> createNewChat() {
         return ResponseEntity.ok(chatService.createNewChat());
     }
 
     @GetMapping
-    public ResponseEntity<List<String>> getChatChannelIds() {
-        return ResponseEntity.ok(chatService.getChatChannelIds());
+    public ResponseEntity<List<ChatInfoDTO>> getChatChannelIds() {
+        return ResponseEntity.ok(chatService.getChatChatInfo());
     }
 }

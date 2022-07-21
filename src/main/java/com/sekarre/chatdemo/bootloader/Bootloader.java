@@ -48,9 +48,9 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createDefaultChats() {
-        chatRepository.save(Chat.builder().id(1L).channelId("Test1").build());
-        chatRepository.save(Chat.builder().id(2L).channelId("Test2").build());
-        chatRepository.save(Chat.builder().id(3L).channelId("Test3").build());
-        chatRepository.save(Chat.builder().id(4L).channelId("Test4").build());
+        chatRepository.save(Chat.builder().id(1L).channelId("Test1").channelName("T1").build());
+        chatRepository.save(Chat.builder().id(2L).channelId("Test2").channelName("T2").build());
+        chatRepository.save(Chat.builder().id(3L).channelId("Test3").channelName("T3").build());
+        chatRepository.save(Chat.builder().id(4L).channelId("Test4").channelName("T4").build());
     }
 }

@@ -1,9 +1,11 @@
 package com.sekarre.chatdemo.services.impl;
 
+import com.sekarre.chatdemo.DTO.ChatInfoDTO;
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.ChatMessage;
 import com.sekarre.chatdemo.exceptions.ChatNotFoundException;
+import com.sekarre.chatdemo.mappers.ChatMapper;
 import com.sekarre.chatdemo.mappers.ChatMessageMapper;
 import com.sekarre.chatdemo.repositories.ChatMessageRepository;
 import com.sekarre.chatdemo.repositories.ChatRepository;
@@ -26,16 +28,17 @@ public class ChatServiceImpl implements ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRepository chatRepository;
     private final ChatMessageMapper chatMessageMapper;
+    private final ChatMapper chatMapper;
     private final UserAuthorizationService userAuthorizationService;
 
     @Override
-    public String createNewChat() {
-        return chatRepository.save(Chat.builder()
-                        .adminUser(UserDetailsHelper.getCurrentUser())
-                        .users(List.of(UserDetailsHelper.getCurrentUser()))
-                        .channelId(getUniqueChannelId())
-                        .build())
-                .getChannelId();
+    public ChatInfoDTO createNewChat() {
+        return chatMapper.mapChatToChatInfoDTO(chatRepository.save(Chat.builder()
+                .adminUser(UserDetailsHelper.getCurrentUser())
+                .users(List.of(UserDetailsHelper.getCurrentUser()))
+                .channelId(getUniqueChannelId())
+                .channelName(RandomStringGenerator.getRandomString(5))
+                .build()));
     }
 
     @Override
@@ -68,11 +71,10 @@ public class ChatServiceImpl implements ChatService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
-    public List<String> getChatChannelIds() {
+    public List<ChatInfoDTO> getChatChatInfo() {
         return chatRepository.findAll().stream()
-                .map(Chat::getChannelId)
+                .map(chatMapper::mapChatToChatInfoDTO)
                 .collect(Collectors.toList());
     }
 

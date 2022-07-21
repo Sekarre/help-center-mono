@@ -26,13 +26,11 @@ public class User implements UserDetails, CredentialsContainer {
 
     private String username;
     private String password;
-
     private String name;
     private String lastname;
 
     @ManyToMany
-    @JoinTable(
-            name = "chat_has_user",
+    @JoinTable(name = "chat_has_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private List<Chat> chats = new ArrayList<>();
