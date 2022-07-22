@@ -33,8 +33,10 @@ public class ChatListener {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         final String destination = destinationTracker.get(headers.getSessionId());
         User user = getUserFromHeaders(headers);
-        simpMessagingTemplate.convertAndSend(
-                Objects.requireNonNull(destination),
+        if (Objects.isNull(destination)) {
+            return;
+        }
+        simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getGoodbyeChatMessage(user.getName() + " " + user.getLastname()));
     }
 
@@ -50,7 +52,7 @@ public class ChatListener {
     }
 
     private String getChannelIdFromDestination(String destination) {
-        String[] splitDest = destination.split("/");
+        String[] splitDest = destination.split("\\.");
         return splitDest[splitDest.length - 1];
     }
 
