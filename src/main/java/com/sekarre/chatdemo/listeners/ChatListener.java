@@ -3,7 +3,7 @@ package com.sekarre.chatdemo.listeners;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.exceptions.WebSocketAuthenticationException;
 import com.sekarre.chatdemo.services.UserAuthorizationService;
-import com.sekarre.chatdemo.util.ChatMessageBotFactory;
+import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -27,6 +27,8 @@ public class ChatListener {
     private final Map<String, String> destinationTracker = new HashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final UserAuthorizationService userAuthorizationService;
+
+    private static final String channelSeparatorRegex = "\\.";
 
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent event) {
@@ -52,7 +54,7 @@ public class ChatListener {
     }
 
     private String getChannelIdFromDestination(String destination) {
-        String[] splitDest = destination.split("\\.");
+        String[] splitDest = destination.split(channelSeparatorRegex);
         return splitDest[splitDest.length - 1];
     }
 

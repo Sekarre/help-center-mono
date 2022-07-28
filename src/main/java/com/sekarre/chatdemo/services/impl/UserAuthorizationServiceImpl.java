@@ -6,7 +6,7 @@ import com.sekarre.chatdemo.exceptions.ChatAuthorizationException;
 import com.sekarre.chatdemo.exceptions.ChatNotFoundException;
 import com.sekarre.chatdemo.repositories.ChatRepository;
 import com.sekarre.chatdemo.services.UserAuthorizationService;
-import com.sekarre.chatdemo.util.UserDetailsHelper;
+import com.sekarre.chatdemo.security.UserDetailsHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

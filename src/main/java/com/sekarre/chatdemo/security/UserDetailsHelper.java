@@ -1,4 +1,4 @@
-package com.sekarre.chatdemo.util;
+package com.sekarre.chatdemo.security;
 
 import com.sekarre.chatdemo.domain.User;
 import org.springframework.security.core.context.SecurityContextHolder;

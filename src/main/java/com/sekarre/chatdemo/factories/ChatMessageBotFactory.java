@@ -1,4 +1,4 @@
-package com.sekarre.chatdemo.util;
+package com.sekarre.chatdemo.factories;
 
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 

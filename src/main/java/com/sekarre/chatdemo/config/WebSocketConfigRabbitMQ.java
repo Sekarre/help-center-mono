@@ -27,6 +27,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 import java.util.Objects;
 
@@ -67,6 +68,14 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
                 .setRelayPort(port)
                 .setSystemLogin(login)
                 .setSystemPasscode(password);
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        WebSocketMessageBrokerConfigurer.super.configureWebSocketTransport(registry);
+        registry
+                .setSendBufferSizeLimit(200 * 1024 * 1024)
+                .setMessageSizeLimit(200 * 1024 * 1024);
     }
 
     @Override

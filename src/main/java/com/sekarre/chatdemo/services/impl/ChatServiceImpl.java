@@ -11,8 +11,8 @@ import com.sekarre.chatdemo.repositories.ChatMessageRepository;
 import com.sekarre.chatdemo.repositories.ChatRepository;
 import com.sekarre.chatdemo.services.ChatService;
 import com.sekarre.chatdemo.services.UserAuthorizationService;
-import com.sekarre.chatdemo.util.RandomStringGenerator;
-import com.sekarre.chatdemo.util.UserDetailsHelper;
+import com.sekarre.chatdemo.util.RandomStringGeneratorUtil;
+import com.sekarre.chatdemo.security.UserDetailsHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class ChatServiceImpl implements ChatService {
                 .adminUser(UserDetailsHelper.getCurrentUser())
                 .users(List.of(UserDetailsHelper.getCurrentUser()))
                 .channelId(getUniqueChannelId())
-                .channelName(RandomStringGenerator.getRandomString(5))
+                .channelName(RandomStringGeneratorUtil.getRandomString(5))
                 .build()));
     }
 
@@ -79,7 +79,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private String getUniqueChannelId() {
-        String generatedChannelId = RandomStringGenerator.getRandomString();
+        String generatedChannelId = RandomStringGeneratorUtil.getRandomString();
         if (chatRepository.existsByChannelId(generatedChannelId)) {
             return getUniqueChannelId();
         }
