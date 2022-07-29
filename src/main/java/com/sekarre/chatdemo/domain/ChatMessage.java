@@ -24,7 +24,7 @@ public class ChatMessage {
 
     @Lob
     @Basic
-    private byte[] file;
+    private String file;
 
     @JoinColumn(name = "sender_id")
     @ManyToOne(cascade = CascadeType.MERGE)

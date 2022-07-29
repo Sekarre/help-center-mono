@@ -50,7 +50,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatMessageDTO savePrivateChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
-        log.debug(chatMessageDTO.toString());
+//        log.debug(chatMessageDTO.toString());
         userAuthorizationService.checkIfUserIsAuthorizedToJoinChannel(channelId);
         ChatMessage chatMessage = createNewChatMessage(chatMessageDTO, channelId);
         return chatMessageMapper.mapMessageToChatMessageDTO(chatMessageRepository.save(chatMessage));

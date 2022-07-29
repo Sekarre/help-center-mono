@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;

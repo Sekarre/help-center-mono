@@ -72,10 +72,9 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
-        WebSocketMessageBrokerConfigurer.super.configureWebSocketTransport(registry);
         registry
-                .setSendBufferSizeLimit(200 * 1024 * 1024)
-                .setMessageSizeLimit(200 * 1024 * 1024);
+                .setSendBufferSizeLimit(2000 * 1024 * 1024)
+                .setMessageSizeLimit(2000 * 1024 * 1024);
     }
 
     @Override

@@ -2,10 +2,11 @@ package com.sekarre.chatdemo.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sekarre.chatdemo.util.DateUtil;
+import com.sekarre.chatdemo.validators.AtLeastOneFieldNotEmpty;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,12 +15,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Builder
+@AtLeastOneFieldNotEmpty(fields = {"message", "file"})
 public class ChatMessageDTO {
 
-    @NotNull
     private String message;
 
-    private byte[] file;
+    private String file;
 
     private Long senderId;
 
