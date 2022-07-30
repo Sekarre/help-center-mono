@@ -62,6 +62,7 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setPathMatcher(new AntPathMatcher("."));
+        registry.setPreservePublishOrder(true);
         registry.setApplicationDestinationPrefixes("/app")
                 .enableStompBrokerRelay("/topic")
                 .setRelayHost(host)

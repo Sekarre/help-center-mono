@@ -2,19 +2,17 @@ package com.sekarre.chatdemo.validators;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
+@Documented
 @Constraint(validatedBy = AtLeastOneFieldNotEmptyValidator.class)
 @Target({ ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AtLeastOneFieldNotEmpty {
 
-    String message() default "Fields values don't match!";
+    String message() default "Fields values are empty!";
 
-    String[] fields();
+    String[] fields() default {};
 
     Class<?>[] groups() default {};
 
