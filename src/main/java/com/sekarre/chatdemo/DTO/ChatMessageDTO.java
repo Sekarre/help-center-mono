@@ -3,6 +3,7 @@ package com.sekarre.chatdemo.DTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sekarre.chatdemo.util.DateUtil;
 import com.sekarre.chatdemo.validators.AtLeastOneFieldNotEmpty;
+import com.sekarre.chatdemo.validators.Base64Encoded;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ public class ChatMessageDTO {
 
     private String message;
 
+    @Base64Encoded(nullAllowed = true)
     private String file;
 
     private Long senderId;

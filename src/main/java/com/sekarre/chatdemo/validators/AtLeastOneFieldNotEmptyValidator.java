@@ -14,17 +14,17 @@ public class AtLeastOneFieldNotEmptyValidator implements ConstraintValidator<AtL
     private String[] fields;
 
     @Override
-    public void initialize(AtLeastOneFieldNotEmpty constraintAnnotation) {
-        this.fields = constraintAnnotation.fields();
+    public void initialize(AtLeastOneFieldNotEmpty atLeastOneFieldNotEmpty) {
+        this.fields = atLeastOneFieldNotEmpty.fields();
     }
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        boolean isValid = true;
+        boolean isValid = false;
         for (String fieldToCheck : fields) {
             Object fieldToCheckValue = new BeanWrapperImpl(value).getPropertyValue(fieldToCheck);
-            if (Objects.isNull(fieldToCheckValue) || StringUtils.isEmpty(fieldToCheckValue.toString())) {
-                isValid = false;
+            if (Objects.nonNull(fieldToCheckValue) && StringUtils.isNotBlank(fieldToCheckValue.toString())) {
+                isValid = true;
             }
         }
         return isValid;
