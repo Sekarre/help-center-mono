@@ -8,7 +8,6 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 public class SessionConfig {
 
 
-    //TODO: change this one to something less bruteforced
     @Bean
     public ServletServerContainerFactoryBean createServletServerContainerFactoryBean() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();

@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-//@SpringBootTest
+@SpringBootTest
 class ChatDemoApplicationTests {
 
     @Test

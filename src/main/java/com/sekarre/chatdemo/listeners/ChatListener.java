@@ -1,11 +1,14 @@
 package com.sekarre.chatdemo.listeners;
 
+import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.exceptions.WebSocketAuthenticationException;
-import com.sekarre.chatdemo.services.UserAuthorizationService;
 import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
+import com.sekarre.chatdemo.services.UserAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.config.Profiles;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,8 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Component
+@Profile(ProfilesHolder.DEFAULT)
 public class ChatListener {
 
     private final Map<String, String> destinationTracker = new HashMap<>();
