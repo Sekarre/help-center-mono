@@ -16,7 +16,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Profile(ProfilesHolder.NO_AUTH)
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE  + 99)
 @Slf4j
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker

@@ -39,6 +39,7 @@ public class Chat {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "chat_has_user",

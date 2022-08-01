@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 
-@Profile(ProfilesHolder.DEFAULT)
+@Profile(ProfilesHolder.NO_AUTH_DISABLED)
 @Configuration
 public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 

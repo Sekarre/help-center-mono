@@ -5,7 +5,6 @@ import com.sekarre.chatdemo.config.*;
 import com.sekarre.chatdemo.services.ChatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +15,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
@@ -35,13 +32,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.any;
 
 @ActiveProfiles(ProfilesHolder.NO_AUTH)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {TestWebSocketConfigRabbitMQ.class, TestSocketSecurityConfig.class, TestSecurityConfig.class})
+        classes = {
+                TestWebSocketConfigRabbitMQ.class, TestSocketSecurityConfig.class, TestSecurityConfig.class,
+                TestJwtTokenFilter.class})
 class ChatRabbitWebSocketControllerTest {
 
     @LocalServerPort
@@ -50,7 +50,7 @@ class ChatRabbitWebSocketControllerTest {
 
     private static final String SEND_MESSAGE_TO_CHAT_ENDPOINT = "/app/private-chat-room.";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/private.";
-    private static final int MAX_TEXT_MESSAGE_BUFFER_SIZE = 20*1024*1024;
+    private static final int MAX_TEXT_MESSAGE_BUFFER_SIZE = 20 * 1024 * 1024;
 
     private CompletableFuture<ChatMessageDTO> completableFuture;
 

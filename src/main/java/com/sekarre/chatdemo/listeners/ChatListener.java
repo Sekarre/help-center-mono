@@ -7,7 +7,6 @@ import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
 import com.sekarre.chatdemo.services.UserAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.config.Profiles;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -25,7 +24,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-@Profile(ProfilesHolder.DEFAULT)
+@Profile(ProfilesHolder.NO_AUTH_DISABLED)
 public class ChatListener {
 
     private final Map<String, String> destinationTracker = new HashMap<>();

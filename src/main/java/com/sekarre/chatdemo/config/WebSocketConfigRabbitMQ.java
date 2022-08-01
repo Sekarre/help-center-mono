@@ -31,8 +31,8 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 
 import java.util.Objects;
 
-@Profile(ProfilesHolder.DEFAULT)
-@Order(Ordered.HIGHEST_PRECEDENCE + 99)
+@Profile(ProfilesHolder.NO_AUTH_DISABLED)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker

@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
-@Profile(ProfilesHolder.DEFAULT)
+@Profile(ProfilesHolder.NO_AUTH_DISABLED)
 @RequiredArgsConstructor
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {

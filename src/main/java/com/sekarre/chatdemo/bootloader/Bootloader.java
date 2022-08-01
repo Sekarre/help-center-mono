@@ -9,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Component
 public class Bootloader implements CommandLineRunner {
@@ -51,6 +53,13 @@ public class Bootloader implements CommandLineRunner {
         chatRepository.save(Chat.builder().id(1L).channelId("Test1").channelName("T1").build());
         chatRepository.save(Chat.builder().id(2L).channelId("Test2").channelName("T2").build());
         chatRepository.save(Chat.builder().id(3L).channelId("Test3").channelName("T3").build());
-        chatRepository.save(Chat.builder().id(4L).channelId("Test4").channelName("T4").build());
+        Chat chat = chatRepository.save(Chat.builder().id(4L).channelId("Test4").channelName("T4").build());
+        addUserToChat(chat);
+    }
+
+    private void addUserToChat(Chat chat) {
+        List<User> users = userRepository.findAll();
+        users.forEach(chat::addUser);
+        chatRepository.save(chat);
     }
 }
