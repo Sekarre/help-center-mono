@@ -1,10 +1,13 @@
 package com.sekarre.chatdemo.security.config;
 
+import com.sekarre.chatdemo.config.ProfilesHolder;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 
+@Profile(ProfilesHolder.DEFAULT)
 @Configuration
 public class SocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 

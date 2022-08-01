@@ -31,6 +31,7 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 
 import java.util.Objects;
 
+@Profile(ProfilesHolder.DEFAULT)
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 @Slf4j
 @RequiredArgsConstructor

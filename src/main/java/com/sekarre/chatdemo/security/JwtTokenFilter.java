@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.security;
 
+import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.io.IOException;
 
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
+@Profile(ProfilesHolder.DEFAULT)
 @RequiredArgsConstructor
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {

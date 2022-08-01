@@ -1,27 +1,32 @@
 package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
-import com.sekarre.chatdemo.config.ProfilesHolder;
-import com.sekarre.chatdemo.config.TestSocketSecurityConfig;
+import com.sekarre.chatdemo.config.*;
 import com.sekarre.chatdemo.services.ChatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import javax.websocket.ContainerProvider;
+import javax.websocket.WebSocketContainer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +41,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles(ProfilesHolder.NO_AUTH)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = TestSocketSecurityConfig.class)
+        classes = {TestWebSocketConfigRabbitMQ.class, TestSocketSecurityConfig.class, TestSecurityConfig.class})
 class ChatRabbitWebSocketControllerTest {
 
     @LocalServerPort
@@ -45,10 +50,11 @@ class ChatRabbitWebSocketControllerTest {
 
     private static final String SEND_MESSAGE_TO_CHAT_ENDPOINT = "/app/private-chat-room.";
     private static final String SUBSCRIBE_CHAT_ENDPOINT = "/topic/private.";
+    private static final int MAX_TEXT_MESSAGE_BUFFER_SIZE = 20*1024*1024;
 
     private CompletableFuture<ChatMessageDTO> completableFuture;
 
-    @Mock
+    @MockBean
     private ChatService chatService;
 
     @BeforeEach
@@ -60,16 +66,16 @@ class ChatRabbitWebSocketControllerTest {
 
     @Test
     public void testSendMessageEndpoint() throws InterruptedException, ExecutionException, TimeoutException {
+        //given
         String channelId = "Test1";
-        ChatMessageDTO payloadChatMessageDTO = ChatMessageDTO.builder().message("Test").build();
-
-        when(chatService.savePrivateChatMessage(any(ChatMessageDTO.class), any(String.class)))
+        ChatMessageDTO payloadChatMessageDTO = ChatMessageDTO.builder().message("Test1").build();
+        Mockito.when(chatService.savePrivateChatMessage(any(ChatMessageDTO.class), any(String.class)))
                 .thenReturn(payloadChatMessageDTO);
 
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(createTransportClient()));
-        stompClient.setInboundMessageSizeLimit(Integer.MAX_VALUE);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
+        //when
         StompSession stompSession = stompClient.connect(URL, new StompSessionHandlerAdapter() {
         }).get(10, SECONDS);
 
@@ -77,13 +83,16 @@ class ChatRabbitWebSocketControllerTest {
         stompSession.send(SEND_MESSAGE_TO_CHAT_ENDPOINT + channelId, payloadChatMessageDTO);
         ChatMessageDTO receivedChatMessageDTO = completableFuture.get(10, SECONDS);
 
+        //then
         assertNotNull(receivedChatMessageDTO);
         assertEquals(receivedChatMessageDTO.getMessage(), payloadChatMessageDTO.getMessage());
     }
 
     private List<Transport> createTransportClient() {
         List<Transport> transports = new ArrayList<>(1);
-        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        container.setDefaultMaxTextMessageBufferSize(MAX_TEXT_MESSAGE_BUFFER_SIZE);
+        transports.add(new WebSocketTransport(new StandardWebSocketClient(container)));
         return transports;
     }
 
