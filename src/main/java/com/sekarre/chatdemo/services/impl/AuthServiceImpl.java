@@ -25,6 +25,6 @@ public class AuthServiceImpl implements AuthService {
         User user = (User) userDetailsService.loadUserByUsername(userCredentials.getUsername());
         if (passwordEncoder.matches(userCredentials.getPassword(), user.getPassword()))
             return new TokenResponse(jwtTokenUtil.generateAccessToken(user));
-        return null;
+        throw new BadCredentialsException("Given credentials are invalid");
     }
 }

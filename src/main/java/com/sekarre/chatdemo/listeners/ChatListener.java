@@ -2,12 +2,16 @@ package com.sekarre.chatdemo.listeners;
 
 import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
+import com.sekarre.chatdemo.exceptions.ChatAuthorizationException;
 import com.sekarre.chatdemo.exceptions.WebSocketAuthenticationException;
+import com.sekarre.chatdemo.exceptions.handler.ListenerErrorHandler;
 import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
 import com.sekarre.chatdemo.services.UserAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,6 +37,7 @@ public class ChatListener {
 
     private static final String channelSeparatorRegex = "\\.";
 
+    @ListenerErrorHandler
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
@@ -45,6 +50,7 @@ public class ChatListener {
                 ChatMessageBotFactory.getGoodbyeChatMessage(user.getName() + " " + user.getLastname()));
     }
 
+    @ListenerErrorHandler
     @EventListener
     public void onConnectEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());

@@ -30,11 +30,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserCredentials userCredentials) {
-        TokenResponse token = authService.getToken(userCredentials);
-        if (Objects.nonNull(token)) {
-            return ResponseEntity.ok(token);
-        } else {
-            return new ResponseEntity<>("Login error", HttpStatus.BAD_REQUEST);
-        }
+        return ResponseEntity.ok(authService.getToken(userCredentials));
     }
 }

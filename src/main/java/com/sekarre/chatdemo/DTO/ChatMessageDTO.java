@@ -6,7 +6,6 @@ import com.sekarre.chatdemo.validators.AtLeastOneFieldNotEmpty;
 import com.sekarre.chatdemo.validators.Base64Encoded;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Getter
