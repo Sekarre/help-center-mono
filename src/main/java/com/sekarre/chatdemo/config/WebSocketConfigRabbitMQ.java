@@ -3,6 +3,7 @@ package com.sekarre.chatdemo.config;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.UserRepository;
 import com.sekarre.chatdemo.security.JwtTokenUtil;
+import com.sekarre.chatdemo.services.UserAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +14,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
@@ -30,6 +31,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 import java.util.Objects;
+
+import static com.sekarre.chatdemo.util.SimpMessageHeaderUtil.getChannelIdFromDestinationHeader;
+import static com.sekarre.chatdemo.util.SimpMessageHeaderUtil.getUserFromHeaders;
 
 @Profile(ProfilesHolder.NO_AUTH_DISABLED)
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -52,8 +56,10 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
     @Value("${spring.rabbitmq.port}")
     private Integer port;
 
+    private final UserAuthorizationService userAuthorizationService;
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
+
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -85,30 +91,38 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
 
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
-
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    String token = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION).split(" ")[1].trim();
-                    log.debug("Header auth token: " + token);
+                if (Objects.nonNull(accessor) && Objects.nonNull(accessor.getCommand())) {
+                    switch (accessor.getCommand()) {
+                        case CONNECT -> {
+                            String token = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION).split(" ")[1].trim();
+                            log.debug("Header auth token: " + token);
 
-                    if (!jwtTokenUtil.validate(token)) {
-                        return message;
+                            if (!jwtTokenUtil.validate(token)) {
+                                return message;
+                            }
+
+                            User user = userRepository.findByUsername(jwtTokenUtil.getUsername(token))
+                                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                    user, null, user.getAuthorities());
+
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                            accessor.setUser(authentication);
+                        }
+                        case SUBSCRIBE -> {
+                            SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(message);
+                            User user = getUserFromHeaders(headers);
+                            userAuthorizationService.checkIfUserIsAuthorizedToJoinChannel(user, getChannelIdFromDestinationHeader(headers.getDestination()));
+                        }
+                        case DISCONNECT -> {
+                            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                            if (Objects.nonNull(authentication))
+                                log.info("Disconnected Auth : " + authentication.getName());
+                            else
+                                log.info("Disconnected Sess : " + accessor.getSessionId());
+                        }
                     }
-
-                    User user = userRepository.findByUsername(jwtTokenUtil.getUsername(token))
-                            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            user, null, user.getAuthorities());
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    accessor.setUser(authentication);
-                } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
-                    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                    if (Objects.nonNull(authentication))
-                        log.info("Disconnected Auth : " + authentication.getName());
-                    else
-                        log.info("Disconnected Sess : " + accessor.getSessionId());
                 }
                 return message;
             }
@@ -121,7 +135,6 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
                 }
 
                 String sessionId = sha.getSessionId();
-
                 switch (sha.getCommand()) {
                     case CONNECT -> log.info("STOMP Connect [sessionId: " + sessionId + "]");
                     case CONNECTED -> log.info("STOMP Connected [sessionId: " + sessionId + "]");

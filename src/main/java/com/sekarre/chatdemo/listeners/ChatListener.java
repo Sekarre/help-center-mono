@@ -2,28 +2,23 @@ package com.sekarre.chatdemo.listeners;
 
 import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
-import com.sekarre.chatdemo.exceptions.ChatAuthorizationException;
-import com.sekarre.chatdemo.exceptions.WebSocketAuthenticationException;
 import com.sekarre.chatdemo.exceptions.handler.ListenerErrorHandler;
 import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
-import com.sekarre.chatdemo.services.UserAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.sekarre.chatdemo.util.SimpMessageHeaderUtil.getUserFromHeaders;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,9 +28,6 @@ public class ChatListener {
 
     private final Map<String, String> destinationTracker = new HashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final UserAuthorizationService userAuthorizationService;
-
-    private static final String channelSeparatorRegex = "\\.";
 
     @ListenerErrorHandler
     @EventListener
@@ -52,29 +44,12 @@ public class ChatListener {
 
     @ListenerErrorHandler
     @EventListener
-    public void onConnectEvent(SessionSubscribeEvent event) {
+    public void onSubscribeEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         User user = getUserFromHeaders(headers);
-        userAuthorizationService.checkIfUserIsAuthorizedToJoinChannel(user, getChannelIdFromDestination(headers.getDestination()));
         destinationTracker.put(headers.getSessionId(), headers.getDestination());
         simpMessagingTemplate.convertAndSend(
                 Objects.requireNonNull(headers.getDestination()),
                 ChatMessageBotFactory.getWelcomeChatMessage(user.getName() + " " + user.getLastname()));
-    }
-
-    private String getChannelIdFromDestination(String destination) {
-        String[] splitDest = destination.split(channelSeparatorRegex);
-        return splitDest[splitDest.length - 1];
-    }
-
-    private User getUserFromHeaders(SimpMessageHeaderAccessor headers) {
-        Principal principal =  headers.getUser();
-        User user = (User) (principal != null ? ((UsernamePasswordAuthenticationToken) principal).getPrincipal() : null);
-
-        if (Objects.isNull(user)) {
-            throw new WebSocketAuthenticationException("User is not authenticated");
-        }
-
-        return user;
     }
 }
