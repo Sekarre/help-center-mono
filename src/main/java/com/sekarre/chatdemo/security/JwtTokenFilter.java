@@ -27,20 +27,27 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+    public static final String SPLIT_REGEX = " ";
+    public static final String BEARER = "Bearer ";
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain chain)
             throws ServletException, IOException {
-
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isEmpty(header) || !header.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
+        final String parameter = request.getParameter(HttpParameters.TOKEN);
+        final String token;
+        boolean isHeaderTypeAuth = true;
+        if (isEmpty(header) || !header.startsWith(BEARER)) {
+            if (isEmpty(parameter) || !parameter.startsWith(BEARER)) {
+                chain.doFilter(request, response);
+                return;
+            }
+            isHeaderTypeAuth = false;
         }
 
-        final String token = header.split(" ")[1].trim();
+        token = isHeaderTypeAuth ? header.split(SPLIT_REGEX)[1].trim() : parameter.split(SPLIT_REGEX)[1].trim();
         if (!jwtTokenUtil.validate(token)) {
             chain.doFilter(request, response);
             return;

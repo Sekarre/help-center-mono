@@ -4,21 +4,24 @@ import com.sekarre.chatdemo.DTO.ChatInfoDTO;
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.ChatMessage;
+import com.sekarre.chatdemo.domain.User;
+import com.sekarre.chatdemo.domain.enums.SseEventType;
 import com.sekarre.chatdemo.exceptions.ChatNotFoundException;
 import com.sekarre.chatdemo.mappers.ChatMapper;
 import com.sekarre.chatdemo.mappers.ChatMessageMapper;
 import com.sekarre.chatdemo.repositories.ChatMessageRepository;
 import com.sekarre.chatdemo.repositories.ChatRepository;
 import com.sekarre.chatdemo.services.ChatService;
-import com.sekarre.chatdemo.services.UserAuthorizationService;
+import com.sekarre.chatdemo.services.EventEmitterService;
 import com.sekarre.chatdemo.util.RandomStringGeneratorUtil;
-import com.sekarre.chatdemo.security.UserDetailsHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.sekarre.chatdemo.security.UserDetailsHelper.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,13 +32,13 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatMessageMapper chatMessageMapper;
     private final ChatMapper chatMapper;
-    private final UserAuthorizationService userAuthorizationService;
+    private final EventEmitterService eventEmitterService;
 
     @Override
     public ChatInfoDTO createNewChat() {
         return chatMapper.mapChatToChatInfoDTO(chatRepository.save(Chat.builder()
-                .adminUser(UserDetailsHelper.getCurrentUser())
-                .users(List.of(UserDetailsHelper.getCurrentUser()))
+                .adminUser(getCurrentUser())
+                .users(List.of(getCurrentUser()))
                 .channelId(getUniqueChannelId())
                 .channelName(RandomStringGeneratorUtil.getRandomString(5))
                 .build()));
@@ -44,23 +47,34 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void joinChat(String channelId) {
         Chat chat = getChatByChannelId(channelId);
-        chat.addUser(UserDetailsHelper.getCurrentUser());
+        chat.addUser(getCurrentUser());
         chatRepository.save(chat);
     }
 
     @Override
     public ChatMessageDTO savePrivateChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
-//        log.debug(chatMessageDTO.toString());
-        userAuthorizationService.checkIfUserIsAuthorizedToJoinChannel(channelId);
+        log.debug("User id: " + getCurrentUser().getId() + " message: " + chatMessageDTO.getMessage());
         ChatMessage chatMessage = createNewChatMessage(chatMessageDTO, channelId);
-        return chatMessageMapper.mapMessageToChatMessageDTO(chatMessageRepository.save(chatMessage));
+        ChatMessageDTO returnChatMessageDTO = chatMessageMapper.mapMessageToChatMessageDTO(chatMessageRepository.save(chatMessage));
+        sendEventMessage(channelId, chatMessage);
+        return returnChatMessageDTO;
+    }
+
+    private void sendEventMessage(String channelId, ChatMessage chatMessage) {
+        eventEmitterService.sendNewEmitterMessage(
+                SseEventType.NEW_CHAT_MESSAGE,
+                channelId,
+                chatMessage.getChat().getUsers().stream()
+                        .map(User::getId)
+                        .filter(id -> !id.equals(getCurrentUser().getId()))
+                        .toArray(Long[]::new));
     }
 
     private ChatMessage createNewChatMessage(ChatMessageDTO chatMessageDTO, String channelId) {
         ChatMessage chatMessage = chatMessageMapper.mapChatMessageDTOToMessage(chatMessageDTO);
-        Chat chat = getChatByChannelId(channelId);
+        Chat chat = getChatByChannelIdWithUsers(channelId);
         chatMessage.setChat(chat);
-        chatMessage.setSender(UserDetailsHelper.getCurrentUser());
+        chatMessage.setSender(getCurrentUser());
         return chatMessage;
     }
 
@@ -88,6 +102,11 @@ public class ChatServiceImpl implements ChatService {
 
     private Chat getChatByChannelId(String channelId) {
         return chatRepository.findByChannelId(channelId)
+                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " doesnt exist"));
+    }
+
+    private Chat getChatByChannelIdWithUsers(String channelId) {
+        return chatRepository.findByChannelIdWithUsers(channelId)
                 .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " doesnt exist"));
     }
 }
