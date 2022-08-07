@@ -13,7 +13,7 @@ public interface ChatService {
 
     ChatMessageDTO savePrivateChatMessage(ChatMessageDTO chatMessageDTO, String channelId);
 
-    List<ChatMessageDTO> getAllChatMessages(Long chatId);
+    List<ChatMessageDTO> getAllChatMessages(String channelId);
 
     List<ChatInfoDTO> getChatChatInfo();
 }

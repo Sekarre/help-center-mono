@@ -2,6 +2,7 @@ package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.ChatInfoDTO;
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
+import com.sekarre.chatdemo.security.perms.ChatReadPermission;
 import com.sekarre.chatdemo.services.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +23,10 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @GetMapping("/{chatId}")
-    public ResponseEntity<List<ChatMessageDTO>> getAllChatMessages(@PathVariable Long chatId) {
-        return ResponseEntity.ok(chatService.getAllChatMessages(chatId));
+    @ChatReadPermission
+    @GetMapping("/{channelId}")
+    public ResponseEntity<List<ChatMessageDTO>> getAllChatMessages(@PathVariable String channelId) {
+        return ResponseEntity.ok(chatService.getAllChatMessages(channelId));
     }
 
     @PatchMapping("/{channelId}")

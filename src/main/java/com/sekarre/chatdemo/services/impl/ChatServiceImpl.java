@@ -79,8 +79,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<ChatMessageDTO> getAllChatMessages(Long chatId) {
-        return chatMessageRepository.findAllByChatIdOrderByCreatedDateTime(chatId).stream()
+    public List<ChatMessageDTO> getAllChatMessages(String channelId) {
+        Chat chat = getChatByChannelId(channelId);
+        return chatMessageRepository.findAllByChatIdOrderByCreatedDateTime(chat.getId()).stream()
                 .map(chatMessageMapper::mapMessageToChatMessageDTO)
                 .collect(Collectors.toList());
     }
@@ -102,11 +103,11 @@ public class ChatServiceImpl implements ChatService {
 
     private Chat getChatByChannelId(String channelId) {
         return chatRepository.findByChannelId(channelId)
-                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " doesnt exist"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " not found"));
     }
 
     private Chat getChatByChannelIdWithUsers(String channelId) {
         return chatRepository.findByChannelIdWithUsers(channelId)
-                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " doesnt exist"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " not found"));
     }
 }

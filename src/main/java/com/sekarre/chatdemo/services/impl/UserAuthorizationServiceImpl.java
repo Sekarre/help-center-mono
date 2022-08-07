@@ -19,21 +19,23 @@ public class UserAuthorizationServiceImpl implements UserAuthorizationService {
     private final ChatRepository chatRepository;
 
     @Override
-    public void checkIfUserIsAuthorizedToJoinChannel(String channelId) {
+    public boolean checkIfUserIsAuthorizedToJoinChannel(String channelId) {
         if (!getChatByChannelIdWithUsers(channelId).getUsers().contains(UserDetailsHelper.getCurrentUser())) {
             throw new ChatAuthorizationException("User is not authorized to join channel with channel id: " + channelId);
         }
+        return true;
     }
 
     @Override
-    public void checkIfUserIsAuthorizedToJoinChannel(User user, String channelId) {
+    public boolean checkIfUserIsAuthorizedToJoinChannel(User user, String channelId) {
         if (!getChatByChannelIdWithUsers(channelId).getUsers().contains(user)) {
             throw new ChatAuthorizationException("User is not authorized to join channel with channel id: " + channelId);
         }
+        return true;
     }
 
     private Chat getChatByChannelIdWithUsers(String channelId) {
         return chatRepository.findByChannelIdWithUsers(channelId)
-                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " doesnt exist"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat with channel id: " + channelId + " not found"));
     }
 }

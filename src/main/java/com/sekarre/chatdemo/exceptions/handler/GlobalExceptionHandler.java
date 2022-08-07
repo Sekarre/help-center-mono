@@ -1,6 +1,8 @@
 package com.sekarre.chatdemo.exceptions.handler;
 
+import com.sekarre.chatdemo.exceptions.ChatAuthorizationException;
 import com.sekarre.chatdemo.exceptions.ChatNotFoundException;
+import com.sekarre.chatdemo.exceptions.GenericChatException;
 import com.sekarre.chatdemo.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = ChatNotFoundException.class)
-    public ResponseEntity<CustomErrorMessage> handleChatNotFoundException(ChatNotFoundException e) {
+    @ExceptionHandler(value = {ChatNotFoundException.class, ChatAuthorizationException.class})
+    public ResponseEntity<CustomErrorMessage> handleChatNotFoundException(GenericChatException e) {
         log.error(e.getMessage());
         return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
     }

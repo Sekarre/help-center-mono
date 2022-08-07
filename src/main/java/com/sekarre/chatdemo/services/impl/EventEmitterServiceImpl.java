@@ -59,7 +59,9 @@ public class EventEmitterServiceImpl implements EventEmitterService {
     public void sendNewEmitterMessage(SseEventType sseEventType, String payload, Long[] usersId) {
         for (Long userId : usersId) {
             try {
-                emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(payload).build());
+                if (emitterMap.containsKey(userId)) {
+                    emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(payload).build());
+                }
             } catch (IOException e) {
                 throw new EmitterEventSendException("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
             }
