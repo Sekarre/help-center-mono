@@ -1,4 +1,4 @@
-package com.sekarre.chatdemo.exceptions;
+package com.sekarre.chatdemo.exceptions.chat;
 
 public class ChatNotFoundException extends GenericChatException {
 

@@ -4,7 +4,6 @@ import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.domain.ChatMessage;
 import org.mapstruct.*;
 
-
 @Mapper(builder = @Builder(disableBuilder = true))
 public abstract class ChatMessageMapper {
 

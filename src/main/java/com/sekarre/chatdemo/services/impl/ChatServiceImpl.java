@@ -6,7 +6,7 @@ import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.ChatMessage;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.domain.enums.SseEventType;
-import com.sekarre.chatdemo.exceptions.ChatNotFoundException;
+import com.sekarre.chatdemo.exceptions.chat.ChatNotFoundException;
 import com.sekarre.chatdemo.mappers.ChatMapper;
 import com.sekarre.chatdemo.mappers.ChatMessageMapper;
 import com.sekarre.chatdemo.repositories.ChatMessageRepository;

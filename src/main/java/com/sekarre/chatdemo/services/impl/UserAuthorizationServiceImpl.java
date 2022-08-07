@@ -2,9 +2,10 @@ package com.sekarre.chatdemo.services.impl;
 
 import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.User;
-import com.sekarre.chatdemo.exceptions.ChatAuthorizationException;
-import com.sekarre.chatdemo.exceptions.ChatNotFoundException;
+import com.sekarre.chatdemo.exceptions.chat.ChatAuthorizationException;
+import com.sekarre.chatdemo.exceptions.chat.ChatNotFoundException;
 import com.sekarre.chatdemo.repositories.ChatRepository;
+import com.sekarre.chatdemo.repositories.EventNotificationRepository;
 import com.sekarre.chatdemo.services.UserAuthorizationService;
 import com.sekarre.chatdemo.security.UserDetailsHelper;
 import lombok.RequiredArgsConstructor;

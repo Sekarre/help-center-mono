@@ -4,6 +4,7 @@ import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.exceptions.handler.ListenerErrorHandler;
 import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
+import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.sekarre.chatdemo.util.SimpMessageHeaderUtil.getChannelIdFromDestinationHeader;
 import static com.sekarre.chatdemo.util.SimpMessageHeaderUtil.getUserFromHeaders;
 
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class ChatListener {
 
     private final Map<String, String> destinationTracker = new HashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final EventNotificationService eventNotificationService;
 
     @ListenerErrorHandler
     @EventListener
@@ -38,6 +41,8 @@ public class ChatListener {
         if (Objects.isNull(destination)) {
             return;
         }
+        destinationTracker.remove(headers.getSessionId());
+        eventNotificationService.startNotificationForChannel(getChannelIdFromDestinationHeader(destination), user.getId());
         simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getGoodbyeChatMessage(user.getName() + " " + user.getLastname()));
     }
@@ -47,9 +52,13 @@ public class ChatListener {
     public void onSubscribeEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         User user = getUserFromHeaders(headers);
-        destinationTracker.put(headers.getSessionId(), headers.getDestination());
-        simpMessagingTemplate.convertAndSend(
-                Objects.requireNonNull(headers.getDestination()),
+        final String destination = headers.getDestination();
+        if (Objects.isNull(destination)) {
+            return;
+        }
+        destinationTracker.put(headers.getSessionId(), destination);
+        eventNotificationService.stopNotificationForChannel(getChannelIdFromDestinationHeader(destination), user.getId());
+        simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getWelcomeChatMessage(user.getName() + " " + user.getLastname()));
     }
 }

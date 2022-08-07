@@ -61,10 +61,12 @@ public class EventEmitterServiceImpl implements EventEmitterService {
     public void sendNewEventMessage(SseEventType sseEventType, String channelId, Long[] usersId) {
         for (Long userId : usersId) {
             try {
-                if (emitterMap.containsKey(userId)) {
-                    emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
+                if (!eventNotificationService.isNotificationLimited(channelId, userId)) {
+                    if (emitterMap.containsKey(userId)) {
+                        emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
+                    }
+                    eventNotificationService.saveEventNotification(sseEventType, channelId, userId);
                 }
-                eventNotificationService.saveEventNotification(sseEventType, channelId);
             } catch (IOException e) {
                 log.debug("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
             }
