@@ -1,8 +1,8 @@
 package com.sekarre.chatdemo.services.impl;
 
 import com.sekarre.chatdemo.domain.enums.SseEventType;
-import com.sekarre.chatdemo.exceptions.EmitterEventSendException;
 import com.sekarre.chatdemo.services.EventEmitterService;
+import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,13 @@ import static com.sekarre.chatdemo.security.UserDetailsHelper.*;
 @RequiredArgsConstructor
 public class EventEmitterServiceImpl implements EventEmitterService {
 
+    public static final long TIMEOUT = 7_200_000L; //2hours
     private final Map<Long, SseEmitter> emitterMap = new ConcurrentHashMap<>();
+    private final EventNotificationService eventNotificationService;
 
     @Override
-    public void removeEmitter() {
-        emitterMap.remove(getCurrentUser().getId());
+    public void removeEmitter(Long userId) {
+        emitterMap.remove(userId);
     }
 
     @Override
@@ -32,38 +34,39 @@ public class EventEmitterServiceImpl implements EventEmitterService {
         if (emitterMap.containsKey(userId)) {
             return emitterMap.get(userId);
         }
-        SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter sseEmitter = new SseEmitter(TIMEOUT);
         sseEmitter.onCompletion(() -> {
             log.debug("Emitter with id: " + userId + " successfully finished task");
-            removeEmitter();
+            removeEmitter(userId);
         });
         sseEmitter.onTimeout(() -> {
             log.debug("Emitter with uuid: " + userId + " couldn't finish task before timeout");
-            removeEmitter();
+            removeEmitter(userId);
         });
         emitterMap.put(userId, sseEmitter);
         return sseEmitter;
     }
 
     @Override
-    public void sendNewEmitterMessage(SseEventType sseEventType, String payload) {
+    public void sendNewEventMessage(SseEventType sseEventType, String channelId) {
         Long userId = getCurrentUser().getId();
         try {
-            emitterMap.get(userId).send(SseEmitter.event().reconnectTime(500).name(sseEventType.name()).data(payload));
+            emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
         } catch (IOException e) {
-            throw new EmitterEventSendException("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
+            log.debug("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
         }
     }
 
     @Override
-    public void sendNewEmitterMessage(SseEventType sseEventType, String payload, Long[] usersId) {
+    public void sendNewEventMessage(SseEventType sseEventType, String channelId, Long[] usersId) {
         for (Long userId : usersId) {
             try {
                 if (emitterMap.containsKey(userId)) {
-                    emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(payload).build());
+                    emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
                 }
+                eventNotificationService.saveEventNotification(sseEventType, channelId);
             } catch (IOException e) {
-                throw new EmitterEventSendException("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
+                log.debug("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
             }
         }
     }

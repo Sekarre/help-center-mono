@@ -5,22 +5,22 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface EventEmitterService {
 
-    void removeEmitter();
+    void removeEmitter(Long userId);
 
     SseEmitter createNewEmitter();
 
     /**
      * Sends new event message to current logged-in user
      * @param sseEventType
-     * @param payload
+     * @param channelId
      */
-    void sendNewEmitterMessage(SseEventType sseEventType, String payload);
+    void sendNewEventMessage(SseEventType sseEventType, String channelId);
 
     /**
      * Sends new event message to all users with id in usersId parameter
      * @param sseEventType
-     * @param payload
+     * @param channelId
      * @param usersId
      */
-    void sendNewEmitterMessage(SseEventType sseEventType, String payload, Long[] usersId);
+    void sendNewEventMessage(SseEventType sseEventType, String channelId, Long[] usersId);
 }

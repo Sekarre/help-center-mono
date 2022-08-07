@@ -61,7 +61,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void sendEventMessage(String channelId, ChatMessage chatMessage) {
-        eventEmitterService.sendNewEmitterMessage(
+        eventEmitterService.sendNewEventMessage(
                 SseEventType.NEW_CHAT_MESSAGE,
                 channelId,
                 chatMessage.getChat().getUsers().stream()
