@@ -41,6 +41,7 @@ public class EventEmitterServiceImpl implements EventEmitterService {
         });
         sseEmitter.onTimeout(() -> {
             log.debug("Emitter with uuid: " + userId + " couldn't finish task before timeout");
+            sseEmitter.complete();
             removeEmitter(userId);
         });
         emitterMap.put(userId, sseEmitter);
@@ -61,7 +62,7 @@ public class EventEmitterServiceImpl implements EventEmitterService {
     public void sendNewEventMessage(SseEventType sseEventType, String channelId, Long[] usersId) {
         for (Long userId : usersId) {
             try {
-                if (!eventNotificationService.isNotificationLimited(channelId, userId)) {
+                if (!eventNotificationService.isNotificationStopped(channelId, userId)) {
                     if (emitterMap.containsKey(userId)) {
                         emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
                     }

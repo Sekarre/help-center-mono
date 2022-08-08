@@ -21,8 +21,8 @@ public class EventNotificationController {
         return eventNotificationService.getAllRemainingNotifications();
     }
 
-    @PatchMapping("/{id}")
-    public void markEventNotificationAsRead(@PathVariable Long id) {
-        eventNotificationService.markNotificationAsRead(id);
+    @PatchMapping("/{channelId}")
+    public void markEventNotificationAsRead(@PathVariable String channelId) {
+        eventNotificationService.markNotificationAsRead(channelId);
     }
 }

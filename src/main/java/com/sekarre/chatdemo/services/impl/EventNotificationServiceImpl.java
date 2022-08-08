@@ -47,21 +47,26 @@ public class EventNotificationServiceImpl implements EventNotificationService {
     }
 
     @Override
-    public void markNotificationAsRead(Long notificationEventId) {
-        EventNotification eventNotification = getEventNotificationById(notificationEventId);
-        checkIfAuthorizedToEditNotification(eventNotification);
-        eventNotification.setRead(true);
-        eventNotificationRepository.save(eventNotification);
+    public void markNotificationAsRead(String channelId) {
+        List<EventNotification> eventNotifications = eventNotificationRepository.findAllByChannelIdAndUserId(channelId, getCurrentUser().getId());
+        if (eventNotifications.isEmpty()) {
+            return;
+        }
+        checkIfAuthorizedToEditNotification(eventNotifications.get(0));
+        eventNotifications.forEach(eventNotification -> {
+            eventNotification.setRead(true);
+            eventNotificationRepository.save(eventNotification);
+        });
     }
 
     @Override
     public void stopNotificationForChannel(String channelId, Long userId) {
-        eventNotificationLimiterRepository.save(EventNotificationLimiter.builder().channelId(channelId).build());
+        eventNotificationLimiterRepository.save(EventNotificationLimiter.builder().channelId(channelId).userId(userId).build());
     }
 
 
     @Override
-    public boolean isNotificationLimited(String channelId, Long userId) {
+    public boolean isNotificationStopped(String channelId, Long userId) {
         return eventNotificationLimiterRepository.existsByChannelIdAndUserId(channelId, userId);
     }
 

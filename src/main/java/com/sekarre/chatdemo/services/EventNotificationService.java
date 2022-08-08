@@ -11,11 +11,17 @@ public interface EventNotificationService {
 
     List<EventNotificationDTO> getAllRemainingNotifications();
 
-    void markNotificationAsRead(Long id);
+    void markNotificationAsRead(String channelId);
 
     void stopNotificationForChannel(String channelId, Long userId);
 
-    boolean isNotificationLimited(String channelId, Long userId);
+    /***
+     * returns true if notifications to channel has been stopped, false otherwise
+     * @param channelId
+     * @param userId
+     * @return
+     */
+    boolean isNotificationStopped(String channelId, Long userId);
 
     void startNotificationForChannel(String channelId, Long userId);
 }
