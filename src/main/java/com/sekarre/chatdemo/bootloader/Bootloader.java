@@ -1,8 +1,10 @@
 package com.sekarre.chatdemo.bootloader;
 
 import com.sekarre.chatdemo.domain.Chat;
+import com.sekarre.chatdemo.domain.IssueType;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.ChatRepository;
+import com.sekarre.chatdemo.repositories.IssueTypeRepository;
 import com.sekarre.chatdemo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -18,11 +20,13 @@ public class Bootloader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final IssueTypeRepository issueTypeRepository;
 
     @Override
     public void run(String... args) {
         createUsers();
         createDefaultChats();
+        createDefaultIssueTypes();
     }
 
     private void createUsers() {
@@ -47,6 +51,12 @@ public class Bootloader implements CommandLineRunner {
                 .name("Mateusz")
                 .lastname("Lewandowski")
                 .build());
+    }
+
+    private void createDefaultIssueTypes() {
+        issueTypeRepository.save(IssueType.builder().name("Game issue").build());
+        issueTypeRepository.save(IssueType.builder().name("Client issue").build());
+        issueTypeRepository.save(IssueType.builder().name("Other").build());
     }
 
     private void createDefaultChats() {

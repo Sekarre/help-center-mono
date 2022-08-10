@@ -29,6 +29,9 @@ public class Chat {
     @NotBlank
     private String channelId;
 
+    @OneToOne(mappedBy = "chat")
+    private Issue issue;
+
     @OneToMany(mappedBy = "chat")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
