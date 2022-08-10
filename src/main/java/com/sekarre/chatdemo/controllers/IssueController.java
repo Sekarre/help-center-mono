@@ -2,6 +2,7 @@ package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.IssueDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
+import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.services.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +25,19 @@ public class IssueController {
         return ResponseEntity.ok(issueService.getAllIssueTypes());
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> createNewIssue(@RequestBody @Valid IssueDTO issueDTO) {
         issueService.createNewIssue(issueDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false) IssueStatus status) {
+        return ResponseEntity.ok(issueService.getAllIssuesWithStatus(status));
+    }
+
+    @GetMapping("/{issueId}")
+    public ResponseEntity<IssueDTO> getIssue(@PathVariable Long issueId) {
+        return ResponseEntity.ok(issueService.getIssueById(issueId));
     }
 }

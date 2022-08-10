@@ -5,7 +5,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +28,14 @@ public class Chat {
     @NotBlank
     private String channelId;
 
-    @OneToOne(mappedBy = "chat")
+    @OneToOne(mappedBy = "chat", fetch = FetchType.LAZY)
     private Issue issue;
 
     @OneToMany(mappedBy = "chat")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "adminUser_id")
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_user_id")
     private User adminUser;
 
     @CreationTimestamp

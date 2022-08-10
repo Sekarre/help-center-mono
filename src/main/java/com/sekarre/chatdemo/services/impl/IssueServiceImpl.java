@@ -4,6 +4,7 @@ import com.sekarre.chatdemo.DTO.IssueDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
+import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.exceptions.issue.IssueNotFoundException;
 import com.sekarre.chatdemo.mappers.IssueMapper;
 import com.sekarre.chatdemo.repositories.IssueRepository;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.sekarre.chatdemo.security.UserDetailsHelper.getCurrentUser;
@@ -53,7 +55,24 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = issueMapper.mapIssueDTOToIssue(issueDTO);
         issue.setUser(getCurrentUser());
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
+        issue.setIssueStatus(IssueStatus.PENDING);
         issueRepository.save(issue);
+    }
+
+    @Override
+    public List<IssueDTO> getAllIssuesWithStatus(IssueStatus status) {
+        if (Objects.isNull(status)) {
+            return issueRepository.findAll().stream().map(issueMapper::mapIssueToIssueDTO).collect(Collectors.toList());
+        }
+        return issueRepository.findAllByIssueStatus(status).stream()
+                .map(issueMapper::mapIssueToIssueDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public IssueDTO getIssueById(Long issueId) {
+        return issueRepository.findById(issueId).map(issueMapper::mapIssueToIssueDTO)
+                .orElseThrow(() -> new IssueNotFoundException("Issue with id: " + issueId + " not found"));
     }
 
     private IssueType getIssueTypeById(Long issueTypeId) {

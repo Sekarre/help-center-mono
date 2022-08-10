@@ -1,7 +1,7 @@
 package com.sekarre.chatdemo.domain.enums;
 
 public enum IssueStatus {
-    WAITING,
+    PENDING,
     ESCALATING,
     INFO_REQUIRED,
     CLOSED

@@ -1,6 +1,7 @@
 package com.sekarre.chatdemo.repositories;
 
 import com.sekarre.chatdemo.domain.Issue;
+import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     Optional<Issue> findByUserId(Long userId);
 
     List<Issue> findAllByUserId(Long userId);
+
+    List<Issue> findAllByIssueStatus(IssueStatus issueStatus);
 }

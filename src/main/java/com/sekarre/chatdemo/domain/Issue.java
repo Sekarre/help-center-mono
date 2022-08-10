@@ -2,8 +2,11 @@ package com.sekarre.chatdemo.domain;
 
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,11 +20,20 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String issue;
+    private String title;
     private String firstName;
     private String lastName;
     private String email;
-    private IssueStatus issueStatus;
+    private String issue;
+
+    @Builder.Default
+    private IssueStatus issueStatus = IssueStatus.PENDING;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @JoinColumn(name = "chat_id")
     @OneToOne(cascade = CascadeType.MERGE)

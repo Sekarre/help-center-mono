@@ -1,7 +1,11 @@
 package com.sekarre.chatdemo.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
+import com.sekarre.chatdemo.util.DateUtil;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -10,6 +14,8 @@ import lombok.*;
 @Builder
 public class IssueDTO {
 
+    private Long id;
+    private String title;
     private String firstName;
     private String lastName;
     private String email;
@@ -17,4 +23,10 @@ public class IssueDTO {
     private IssueStatus issueStatus;
     private Long issueTypeId;
     private Long channelId;
+
+    @JsonFormat(pattern = DateUtil.DATE_TIME_FORMAT)
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = DateUtil.DATE_TIME_FORMAT)
+    private LocalDateTime updatedAt;
 }
