@@ -1,4 +1,4 @@
-package com.sekarre.chatdemo.controllers;
+package com.sekarre.chatdemo.controllers.ws;
 
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.services.ChatService;
@@ -12,7 +12,7 @@ import javax.validation.Valid;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class ChatRabbitWebSocketController {
+public class ChatWebSocketController {
 
     private final ChatService chatService;
 

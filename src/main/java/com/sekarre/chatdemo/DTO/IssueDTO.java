@@ -22,7 +22,7 @@ public class IssueDTO {
     private String issue;
     private IssueStatus issueStatus;
     private Long issueTypeId;
-    private Long channelId;
+    private String channelId;
 
     @JsonFormat(pattern = DateUtil.DATE_TIME_FORMAT)
     private LocalDateTime createdAt;

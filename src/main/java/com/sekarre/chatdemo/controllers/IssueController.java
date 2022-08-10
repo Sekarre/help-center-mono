@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.sekarre.chatdemo.controllers.IssueController.*;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/issues")
+@RequestMapping(value = BASE_ISSUE_URL)
 public class IssueController {
 
+    public static final String BASE_ISSUE_URL = "/api/v1/issues";
     private final IssueService issueService;
 
     @GetMapping("/types")

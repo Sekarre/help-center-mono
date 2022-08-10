@@ -9,6 +9,7 @@ import com.sekarre.chatdemo.exceptions.issue.IssueNotFoundException;
 import com.sekarre.chatdemo.mappers.IssueMapper;
 import com.sekarre.chatdemo.repositories.IssueRepository;
 import com.sekarre.chatdemo.repositories.IssueTypeRepository;
+import com.sekarre.chatdemo.services.ChatService;
 import com.sekarre.chatdemo.services.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final IssueTypeRepository issueTypeRepository;
     private final IssueMapper issueMapper;
+    private final ChatService chatService;
 
     @Override
     public List<IssueTypeDTO> getAllIssueTypes() {
@@ -56,6 +58,7 @@ public class IssueServiceImpl implements IssueService {
         issue.setUser(getCurrentUser());
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
         issue.setIssueStatus(IssueStatus.PENDING);
+        issue.setChat(chatService.createNewChat(issueDTO.getTitle()));
         issueRepository.save(issue);
     }
 
@@ -72,6 +75,12 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public IssueDTO getIssueById(Long issueId) {
         return issueRepository.findById(issueId).map(issueMapper::mapIssueToIssueDTO)
+                .orElseThrow(() -> new IssueNotFoundException("Issue with id: " + issueId + " not found"));
+    }
+
+    @Override
+    public Issue getIssueEntityById(Long issueId) {
+        return issueRepository.findById(issueId)
                 .orElseThrow(() -> new IssueNotFoundException("Issue with id: " + issueId + " not found"));
     }
 

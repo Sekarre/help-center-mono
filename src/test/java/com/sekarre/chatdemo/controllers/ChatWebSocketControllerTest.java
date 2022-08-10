@@ -42,7 +42,7 @@ import static org.mockito.Mockito.any;
         classes = {
                 TestWebSocketConfigRabbitMQ.class, TestSocketSecurityConfig.class, TestSecurityConfig.class,
                 TestJwtTokenFilter.class})
-class ChatRabbitWebSocketControllerTest {
+class ChatWebSocketControllerTest {
 
     @LocalServerPort
     private int port;
