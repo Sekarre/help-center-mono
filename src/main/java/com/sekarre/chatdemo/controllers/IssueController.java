@@ -1,18 +1,20 @@
 package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.IssueDTO;
+import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.services.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.sekarre.chatdemo.controllers.IssueController.*;
+import static com.sekarre.chatdemo.controllers.IssueController.BASE_ISSUE_URL;
 
 @Slf4j
 @RestController
@@ -23,6 +25,11 @@ public class IssueController {
     public static final String BASE_ISSUE_URL = "/api/v1/issues";
     private final IssueService issueService;
 
+    @GetMapping("/issue-statuses")
+    public ResponseEntity<List<String>> getIssueStatuses() {
+        return ResponseEntity.ok(issueService.getIssueStatuses());
+    }
+
     @GetMapping("/types")
     public ResponseEntity<List<IssueTypeDTO>> getIssueTypes() {
         return ResponseEntity.ok(issueService.getAllIssueTypes());
@@ -31,6 +38,13 @@ public class IssueController {
     @PostMapping
     public ResponseEntity<?> createNewIssue(@RequestBody @Valid IssueDTO issueDTO) {
         issueService.createNewIssue(issueDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{issueId}")
+    public ResponseEntity<?> changeIssueStatus(@PathVariable Long issueId,
+                                               @RequestBody @Valid IssueStatusChangeDTO issueStatusChangeDTO) {
+        issueService.changeIssueStatus(issueId, issueStatusChangeDTO);
         return ResponseEntity.ok().build();
     }
 

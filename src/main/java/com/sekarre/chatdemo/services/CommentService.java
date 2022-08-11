@@ -1,12 +1,17 @@
 package com.sekarre.chatdemo.services;
 
-import com.sekarre.chatdemo.DTO.CommentDTO;
+import com.sekarre.chatdemo.DTO.CommentCreateRequestDTO;
+import com.sekarre.chatdemo.DTO.CommentResponseDTO;
+import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
+import com.sekarre.chatdemo.domain.Issue;
 
 import java.util.List;
 
 public interface CommentService {
 
-    List<CommentDTO> getAllIssueComments(Long issueId);
+    List<CommentResponseDTO> getAllIssueComments(Long issueId);
 
-    void createNewComment(CommentDTO commentDTO, Long issueId);
+    void createNewCommentWithStatusChanged(CommentCreateRequestDTO commentCreateRequestDTO, Long issueId);
+
+    void createNewCommentWithStatusChanged(IssueStatusChangeDTO issueStatusChangeDTO, Issue issue);
 }

@@ -9,7 +9,7 @@ public class ChatMessageBotFactory {
 
     public static ChatMessageDTO getWelcomeChatMessage(String user) {
         return ChatMessageDTO.builder()
-                .message(user + " dołączył do czatu")
+                .message(user + " joined chat")
                 .senderName(botName)
                 .senderId(botId)
                 .build();
@@ -17,7 +17,7 @@ public class ChatMessageBotFactory {
 
     public static ChatMessageDTO getGoodbyeChatMessage(String user) {
         return ChatMessageDTO.builder()
-                .message(user + " opuścił czat")
+                .message(user + " left chat")
                 .senderName(botName)
                 .senderId(botId)
                 .build();

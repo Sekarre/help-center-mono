@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class Issue {
     private String firstName;
     private String lastName;
     private String email;
+
+    @Lob
     private String issue;
 
     @Builder.Default
@@ -37,7 +40,7 @@ public class Issue {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "issue")
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.MERGE)
     private List<Comment> comments = new ArrayList<>();
 
     @JoinColumn(name = "chat_id")

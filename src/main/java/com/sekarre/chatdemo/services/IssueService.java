@@ -1,6 +1,7 @@
 package com.sekarre.chatdemo.services;
 
 import com.sekarre.chatdemo.DTO.IssueDTO;
+import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
@@ -11,11 +12,15 @@ public interface IssueService {
 
     List<IssueTypeDTO> getAllIssueTypes();
 
+    List<String> getIssueStatuses();
+
     IssueDTO getUserIssue();
 
     List<IssueDTO> getAllUserIssues();
 
     void createNewIssue(IssueDTO issueDTO);
+
+    void changeIssueStatus(Long issueId, IssueStatusChangeDTO issueStatusChangeDTO);
 
     List<IssueDTO> getAllIssuesWithStatus(IssueStatus status);
 

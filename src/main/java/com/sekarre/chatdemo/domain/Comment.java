@@ -1,9 +1,11 @@
 package com.sekarre.chatdemo.domain;
 
+import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,6 +21,7 @@ public class Comment {
     private Long id;
     private String fullName;
     private String content;
+    private IssueStatus issueStatus;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

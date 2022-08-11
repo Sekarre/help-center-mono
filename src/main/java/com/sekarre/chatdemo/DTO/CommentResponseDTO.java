@@ -1,9 +1,9 @@
 package com.sekarre.chatdemo.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 import static com.sekarre.chatdemo.util.DateUtil.DATE_TIME_FORMAT;
@@ -14,14 +14,13 @@ import static com.sekarre.chatdemo.util.DateUtil.DATE_TIME_FORMAT;
 @AllArgsConstructor
 @ToString
 @Builder
-public class CommentDTO {
+public class CommentResponseDTO {
 
     private Long id;
     private String fullName;
-
-    @NotBlank
     private String content;
     private Long replyCommentId;
+    private IssueStatus issueStatus;
 
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime createdAt;

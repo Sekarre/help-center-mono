@@ -1,6 +1,7 @@
 package com.sekarre.chatdemo.controllers;
 
-import com.sekarre.chatdemo.DTO.CommentDTO;
+import com.sekarre.chatdemo.DTO.CommentCreateRequestDTO;
+import com.sekarre.chatdemo.DTO.CommentResponseDTO;
 import com.sekarre.chatdemo.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{issueId}")
-    public ResponseEntity<List<CommentDTO>> getAllIssueComments(@PathVariable Long issueId) {
+    public ResponseEntity<List<CommentResponseDTO>> getAllIssueComments(@PathVariable Long issueId) {
         return ResponseEntity.ok(commentService.getAllIssueComments(issueId));
     }
 
     @PostMapping("/{issueId}")
-    public ResponseEntity<?> createNewComment(@PathVariable Long issueId, @RequestBody @Valid CommentDTO commentDTO) {
-        commentService.createNewComment(commentDTO, issueId);
+    public ResponseEntity<?> createNewComment(@PathVariable Long issueId,
+                                              @RequestBody @Valid CommentCreateRequestDTO commentCreateRequestDTO) {
+        commentService.createNewCommentWithStatusChanged(commentCreateRequestDTO, issueId);
         return ResponseEntity.ok().build();
     }
 }

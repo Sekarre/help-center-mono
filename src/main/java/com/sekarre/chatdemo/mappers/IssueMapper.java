@@ -1,9 +1,11 @@
 package com.sekarre.chatdemo.mappers;
 
 import com.sekarre.chatdemo.DTO.IssueDTO;
+import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
+import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,9 +14,14 @@ import org.mapstruct.Mapping;
 public abstract class IssueMapper {
 
     public abstract IssueTypeDTO mapIssueTypeToIssueTypeDTO(IssueType issueType);
+
+    public abstract IssueStatusChangeDTO mapIssueStatusToIssueStatusDTO(IssueStatus issueStatus);
+
     public abstract IssueType mapIssueTypeDTOToIssueType(IssueTypeDTO issueTypeDTO);
+
     @Mapping(target = "issueTypeId", source = "issue.issueType.id")
     @Mapping(target = "channelId", source = "issue.chat.channelId")
     public abstract IssueDTO mapIssueToIssueDTO(Issue issue);
+
     public abstract Issue mapIssueDTOToIssue(IssueDTO issueDTO);
 }
