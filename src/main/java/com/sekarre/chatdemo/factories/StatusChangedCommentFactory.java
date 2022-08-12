@@ -16,7 +16,7 @@ public class StatusChangedCommentFactory {
                 return "Status changed to ESCALATING.";
             }
             case INFO_REQUIRED -> {
-                return "Status change to INFO REQUIRED.";
+                return "Status changed to INFO REQUIRED.";
             }
             default -> {
                 return "";

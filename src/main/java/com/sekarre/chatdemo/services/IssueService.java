@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.services;
 
+import com.sekarre.chatdemo.DTO.GroupedIssueDTO;
 import com.sekarre.chatdemo.DTO.IssueDTO;
 import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
@@ -23,6 +24,8 @@ public interface IssueService {
     void changeIssueStatus(Long issueId, IssueStatusChangeDTO issueStatusChangeDTO);
 
     List<IssueDTO> getAllIssuesWithStatus(IssueStatus status);
+
+    GroupedIssueDTO getAllIssuesGrouped();
 
     IssueDTO getIssueById(Long issueId);
 

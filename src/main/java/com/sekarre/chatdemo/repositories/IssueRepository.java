@@ -11,9 +11,9 @@ import java.util.Optional;
 @Repository
 public interface IssueRepository extends JpaRepository<Issue, Long> {
 
-    Optional<Issue> findByUserId(Long userId);
+    Optional<Issue> findByAuthorId(Long userId);
 
-    List<Issue> findAllByUserId(Long userId);
+    List<Issue> findAllByAuthorId(Long userId);
 
     List<Issue> findAllByIssueStatus(IssueStatus issueStatus);
 }

@@ -35,6 +35,13 @@ public class User implements UserDetails, CredentialsContainer {
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private List<Chat> chats = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "issue_has_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "issue_id"))
+    private List<Issue> issues = new ArrayList<>();
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,5 +52,12 @@ public class Issue {
 
     @JoinColumn(name = "user_id")
     @ManyToOne(cascade = CascadeType.MERGE)
-    private User user;
+    private User author;
+
+    @Builder.Default
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "issue_has_user",
+            joinColumns = @JoinColumn(name = "issue_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> participants = new ArrayList<>();
 }

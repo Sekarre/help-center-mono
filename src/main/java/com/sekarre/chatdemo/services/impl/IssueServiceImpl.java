@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.services.impl;
 
+import com.sekarre.chatdemo.DTO.GroupedIssueDTO;
 import com.sekarre.chatdemo.DTO.IssueDTO;
 import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
@@ -51,14 +52,14 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public IssueDTO getUserIssue() {
-        return issueRepository.findByUserId(getCurrentUser().getId())
+        return issueRepository.findByAuthorId(getCurrentUser().getId())
                 .map(issueMapper::mapIssueToIssueDTO)
                 .orElse(null);
     }
 
     @Override
     public List<IssueDTO> getAllUserIssues() {
-        return issueRepository.findAllByUserId(getCurrentUser().getId()).stream()
+        return issueRepository.findAllByAuthorId(getCurrentUser().getId()).stream()
                 .map(issueMapper::mapIssueToIssueDTO)
                 .collect(Collectors.toList());
     }
@@ -66,7 +67,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public void createNewIssue(IssueDTO issueDTO) {
         Issue issue = issueMapper.mapIssueDTOToIssue(issueDTO);
-        issue.setUser(getCurrentUser());
+        issue.setAuthor(getCurrentUser());
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
         issue.setIssueStatus(IssueStatus.PENDING);
         issue.setChat(chatService.createNewChat(issueDTO.getTitle()));
@@ -93,6 +94,15 @@ public class IssueServiceImpl implements IssueService {
         return issueRepository.findAllByIssueStatus(status).stream()
                 .map(issueMapper::mapIssueToIssueDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public GroupedIssueDTO getAllIssuesGrouped() {
+        GroupedIssueDTO groupedIssueDTO = new GroupedIssueDTO();
+        issueRepository.findAll().stream()
+                .map(issueMapper::mapIssueToIssueDTO)
+                .forEach(groupedIssueDTO::addIssueDTO);
+        return groupedIssueDTO;
     }
 
     @Override

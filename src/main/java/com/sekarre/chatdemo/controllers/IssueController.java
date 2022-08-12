@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.controllers;
 
+import com.sekarre.chatdemo.DTO.GroupedIssueDTO;
 import com.sekarre.chatdemo.DTO.IssueDTO;
 import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
@@ -51,6 +52,11 @@ public class IssueController {
     @GetMapping
     public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false) IssueStatus status) {
         return ResponseEntity.ok(issueService.getAllIssuesWithStatus(status));
+    }
+
+    @GetMapping("/grouped")
+    public ResponseEntity<GroupedIssueDTO> getAllIssuesGrouped() {
+        return ResponseEntity.ok(issueService.getAllIssuesGrouped());
     }
 
     @GetMapping("/{issueId}")
