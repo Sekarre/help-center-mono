@@ -12,15 +12,15 @@ public interface EventEmitterService {
     /**
      * Sends new event message to current logged-in user
      * @param eventType
-     * @param channelId
+     * @param destinationId
      */
-    void sendNewEventMessage(EventType eventType, String channelId);
+    void sendNewEventMessage(EventType eventType, String destinationId);
 
     /**
      * Sends new event message to all users with id in usersId parameter
      * @param eventType
-     * @param channelId
+     * @param destinationId
      * @param usersId
      */
-    void sendNewEventMessage(EventType eventType, String channelId, Long[] usersId);
+    void sendNewEventMessage(EventType eventType, String destinationId, Long[] usersId);
 }

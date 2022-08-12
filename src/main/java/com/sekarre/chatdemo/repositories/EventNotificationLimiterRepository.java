@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface EventNotificationLimiterRepository extends JpaRepository<EventNotificationLimiter, Long> {
 
-    boolean existsByDestinationIdAndUserIdAndEventType(String channelId, Long userId, EventType eventType);
+    boolean existsByDestinationIdAndUserIdAndEventType(String destinationId, Long userId, EventType eventType);
 
     @Transactional
-    void deleteByDestinationIdAndUserIdAndEventType(String channelId, Long userId, EventType eventType);
+    void deleteByDestinationIdAndUserIdAndEventType(String destinationId, Long userId, EventType eventType);
 }

@@ -9,7 +9,7 @@ public interface EventNotificationService {
 
     void saveEventNotification(EventType eventType, String destinationId, Long userId);
 
-    List<EventNotificationDTO> getAllRemainingNotifications();
+    List<EventNotificationDTO> getAllUnreadNotifications();
 
     void markNotificationAsRead(String destinationId, String eventType);
 

@@ -40,7 +40,7 @@ public class EventNotificationServiceImpl implements EventNotificationService {
     }
 
     @Override
-    public List<EventNotificationDTO> getAllRemainingNotifications() {
+    public List<EventNotificationDTO> getAllUnreadNotifications() {
         return eventNotificationRepository.findAllByUserIdAndReadIsFalse(getCurrentUser().getId()).stream()
                 .map(eventNotificationMapper::mapEventNotificationToEventNotificationDTO)
                 .collect(Collectors.toList());

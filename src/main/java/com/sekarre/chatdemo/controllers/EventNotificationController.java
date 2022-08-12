@@ -17,8 +17,8 @@ public class EventNotificationController {
     private final EventNotificationService eventNotificationService;
 
     @GetMapping
-    public List<EventNotificationDTO> getRemainingNotifications() {
-        return eventNotificationService.getAllRemainingNotifications();
+    public List<EventNotificationDTO> getUnreadNotifications() {
+        return eventNotificationService.getAllUnreadNotifications();
     }
 
     @PatchMapping("/{destinationId}")

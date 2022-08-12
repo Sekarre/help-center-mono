@@ -44,7 +44,7 @@ public class ChatListener {
         }
         destinationTracker.remove(headers.getSessionId());
         eventNotificationService.startNotificationForDestination(
-                getChannelIdFromDestinationHeader(destination), user.getId(), EventType.CHAT);
+                getChannelIdFromDestinationHeader(destination), user.getId(), EventType.NEW_CHAT_MESSAGE);
         simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getGoodbyeChatMessage(user.getName() + " " + user.getLastname()));
     }
@@ -60,7 +60,7 @@ public class ChatListener {
         }
         destinationTracker.put(headers.getSessionId(), destination);
         eventNotificationService.stopNotificationForDestination(
-                getChannelIdFromDestinationHeader(destination), user.getId(), EventType.CHAT);
+                getChannelIdFromDestinationHeader(destination), user.getId(), EventType.NEW_CHAT_MESSAGE);
         simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getWelcomeChatMessage(user.getName() + " " + user.getLastname()));
     }

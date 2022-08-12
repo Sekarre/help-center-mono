@@ -49,24 +49,24 @@ public class EventEmitterServiceImpl implements EventEmitterService {
     }
 
     @Override
-    public void sendNewEventMessage(EventType eventType, String channelId) {
+    public void sendNewEventMessage(EventType eventType, String destinationId) {
         Long userId = getCurrentUser().getId();
         try {
-            emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(channelId).reconnectTime(500).build());
+            emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(destinationId).reconnectTime(500).build());
         } catch (IOException e) {
             log.debug("Emitter send event failed for id: " + userId + " and event: " + eventType);
         }
     }
 
     @Override
-    public void sendNewEventMessage(EventType eventType, String channelId, Long[] usersId) {
+    public void sendNewEventMessage(EventType eventType, String destinationId, Long[] usersId) {
         for (Long userId : usersId) {
             try {
-                if (!eventNotificationService.isNotificationStopped(channelId, userId, eventType)) {
+                if (!eventNotificationService.isNotificationStopped(destinationId, userId, eventType)) {
                     if (emitterMap.containsKey(userId)) {
-                        emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(channelId).reconnectTime(500).build());
+                        emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(destinationId).reconnectTime(500).build());
                     }
-                    eventNotificationService.saveEventNotification(eventType, channelId, userId);
+                    eventNotificationService.saveEventNotification(eventType, destinationId, userId);
                 }
             } catch (IOException e) {
                 log.debug("Emitter send event failed for id: " + userId + " and event: " + eventType);
