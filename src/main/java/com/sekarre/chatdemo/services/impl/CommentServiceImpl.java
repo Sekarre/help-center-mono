@@ -8,15 +8,13 @@ import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.exceptions.comment.CommentNotFoundException;
 import com.sekarre.chatdemo.exceptions.issue.IssueNotFoundException;
-import com.sekarre.chatdemo.factories.StatusChangedCommentFactory;
 import com.sekarre.chatdemo.mappers.CommentMapper;
 import com.sekarre.chatdemo.repositories.CommentRepository;
 import com.sekarre.chatdemo.repositories.IssueRepository;
 import com.sekarre.chatdemo.services.CommentService;
-import com.sekarre.chatdemo.services.IssueService;
+import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.sekarre.chatdemo.factories.StatusChangedCommentFactory.getStatusChangedComment;
-import static com.sekarre.chatdemo.security.UserDetailsHelper.*;
+import static com.sekarre.chatdemo.security.UserDetailsHelper.getCurrentUserFullName;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final IssueRepository issueRepository;
+    private final EventNotificationService eventNotificationService;
 
     @Override
     public List<CommentResponseDTO> getAllIssueComments(Long issueId) {
@@ -44,12 +43,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void createNewCommentWithStatusChanged(CommentCreateRequestDTO commentCreateRequestDTO, Long issueId) {
+    public void createNewComment(CommentCreateRequestDTO commentCreateRequestDTO, Long issueId) {
         Comment comment = getComment(commentCreateRequestDTO, getIssueById(issueId));
         if (Objects.nonNull(commentCreateRequestDTO.getReplyCommentId())) {
             comment.setReplyComment(getCommentById(commentCreateRequestDTO.getReplyCommentId()));
         }
         commentRepository.save(comment);
+//        eventNotificationService.saveEventNotification();
     }
 
     @Override

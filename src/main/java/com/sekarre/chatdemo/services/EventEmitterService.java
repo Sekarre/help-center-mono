@@ -1,6 +1,6 @@
 package com.sekarre.chatdemo.services;
 
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface EventEmitterService {
@@ -11,16 +11,16 @@ public interface EventEmitterService {
 
     /**
      * Sends new event message to current logged-in user
-     * @param sseEventType
+     * @param eventType
      * @param channelId
      */
-    void sendNewEventMessage(SseEventType sseEventType, String channelId);
+    void sendNewEventMessage(EventType eventType, String channelId);
 
     /**
      * Sends new event message to all users with id in usersId parameter
-     * @param sseEventType
+     * @param eventType
      * @param channelId
      * @param usersId
      */
-    void sendNewEventMessage(SseEventType sseEventType, String channelId, Long[] usersId);
+    void sendNewEventMessage(EventType eventType, String channelId, Long[] usersId);
 }

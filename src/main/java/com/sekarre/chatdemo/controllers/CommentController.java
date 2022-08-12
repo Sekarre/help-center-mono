@@ -30,7 +30,7 @@ public class CommentController {
     @PostMapping("/{issueId}")
     public ResponseEntity<?> createNewComment(@PathVariable Long issueId,
                                               @RequestBody @Valid CommentCreateRequestDTO commentCreateRequestDTO) {
-        commentService.createNewCommentWithStatusChanged(commentCreateRequestDTO, issueId);
+        commentService.createNewComment(commentCreateRequestDTO, issueId);
         return ResponseEntity.ok().build();
     }
 }

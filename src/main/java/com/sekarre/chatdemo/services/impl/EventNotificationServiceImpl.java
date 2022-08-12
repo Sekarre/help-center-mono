@@ -3,7 +3,7 @@ package com.sekarre.chatdemo.services.impl;
 import com.sekarre.chatdemo.DTO.EventNotificationDTO;
 import com.sekarre.chatdemo.domain.EventNotification;
 import com.sekarre.chatdemo.domain.EventNotificationLimiter;
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import com.sekarre.chatdemo.exceptions.notification.EventNotificationAuthorizationException;
 import com.sekarre.chatdemo.exceptions.notification.EventNotificationNotFoundException;
 import com.sekarre.chatdemo.factories.EventNotificationMessageFactory;
@@ -30,12 +30,12 @@ public class EventNotificationServiceImpl implements EventNotificationService {
     private final EventNotificationMapper eventNotificationMapper;
 
     @Override
-    public void saveEventNotification(SseEventType sseEventType, String channelId, Long userId) {
+    public void saveEventNotification(EventType eventType, String destinationId, Long userId) {
         eventNotificationRepository.save(EventNotification.builder()
-                .message(new EventNotificationMessageFactory().getEventNotificationMessage(sseEventType))
-                .channelId(channelId)
+                .message(new EventNotificationMessageFactory().getEventNotificationMessage(eventType))
+                .destinationId(destinationId)
                 .userId(userId)
-                .sseEventType(sseEventType)
+                .eventType(eventType)
                 .build());
     }
 
@@ -47,8 +47,9 @@ public class EventNotificationServiceImpl implements EventNotificationService {
     }
 
     @Override
-    public void markNotificationAsRead(String channelId) {
-        List<EventNotification> eventNotifications = eventNotificationRepository.findAllByChannelIdAndUserId(channelId, getCurrentUser().getId());
+    public void markNotificationAsRead(String destinationId, String eventType) {
+        List<EventNotification> eventNotifications = eventNotificationRepository
+                .findAllByDestinationIdAndUserIdAndEventType(destinationId, getCurrentUser().getId(), EventType.valueOf(eventType));
         if (eventNotifications.isEmpty()) {
             return;
         }
@@ -60,24 +61,23 @@ public class EventNotificationServiceImpl implements EventNotificationService {
     }
 
     @Override
-    public void stopNotificationForChannel(String channelId, Long userId) {
-        eventNotificationLimiterRepository.save(EventNotificationLimiter.builder().channelId(channelId).userId(userId).build());
-    }
-
-
-    @Override
-    public boolean isNotificationStopped(String channelId, Long userId) {
-        return eventNotificationLimiterRepository.existsByChannelIdAndUserId(channelId, userId);
+    public void stopNotificationForDestination(String destinationId, Long userId, EventType eventType) {
+        eventNotificationLimiterRepository.save(EventNotificationLimiter.builder().destinationId(destinationId).eventType(eventType).userId(userId).build());
     }
 
     @Override
-    public void startNotificationForChannel(String channelId, Long userId) {
-        eventNotificationLimiterRepository.deleteByChannelIdAndUserId(channelId, userId);
+    public boolean isNotificationStopped(String destinationId, Long userId, EventType eventType) {
+        return eventNotificationLimiterRepository.existsByDestinationIdAndUserIdAndEventType(destinationId, userId, eventType);
+    }
+
+    @Override
+    public void startNotificationForDestination(String destinationId, Long userId, EventType eventType) {
+        eventNotificationLimiterRepository.deleteByDestinationIdAndUserIdAndEventType(destinationId, userId, eventType);
     }
 
     private void checkIfAuthorizedToEditNotification(EventNotification eventNotification) {
         Long userId = getCurrentUser().getId();
-        if ( !eventNotification.getUserId().equals(userId)){
+        if (!eventNotification.getUserId().equals(userId)) {
             throw new EventNotificationAuthorizationException(
                     "User with id: + " + userId + "is not authorized to edit notification with id: " + eventNotification.getId());
         }

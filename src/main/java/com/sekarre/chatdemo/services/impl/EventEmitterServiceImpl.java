@@ -1,6 +1,6 @@
 package com.sekarre.chatdemo.services.impl;
 
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import com.sekarre.chatdemo.services.EventEmitterService;
 import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -49,27 +49,27 @@ public class EventEmitterServiceImpl implements EventEmitterService {
     }
 
     @Override
-    public void sendNewEventMessage(SseEventType sseEventType, String channelId) {
+    public void sendNewEventMessage(EventType eventType, String channelId) {
         Long userId = getCurrentUser().getId();
         try {
-            emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
+            emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(channelId).reconnectTime(500).build());
         } catch (IOException e) {
-            log.debug("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
+            log.debug("Emitter send event failed for id: " + userId + " and event: " + eventType);
         }
     }
 
     @Override
-    public void sendNewEventMessage(SseEventType sseEventType, String channelId, Long[] usersId) {
+    public void sendNewEventMessage(EventType eventType, String channelId, Long[] usersId) {
         for (Long userId : usersId) {
             try {
-                if (!eventNotificationService.isNotificationStopped(channelId, userId)) {
+                if (!eventNotificationService.isNotificationStopped(channelId, userId, eventType)) {
                     if (emitterMap.containsKey(userId)) {
-                        emitterMap.get(userId).send(SseEmitter.event().name(sseEventType.name()).data(channelId).reconnectTime(500).build());
+                        emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(channelId).reconnectTime(500).build());
                     }
-                    eventNotificationService.saveEventNotification(sseEventType, channelId, userId);
+                    eventNotificationService.saveEventNotification(eventType, channelId, userId);
                 }
             } catch (IOException e) {
-                log.debug("Emitter send event failed for id: " + userId + " and event: " + sseEventType);
+                log.debug("Emitter send event failed for id: " + userId + " and event: " + eventType);
             }
         }
     }

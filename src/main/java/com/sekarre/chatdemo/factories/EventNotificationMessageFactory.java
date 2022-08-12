@@ -1,6 +1,6 @@
 package com.sekarre.chatdemo.factories;
 
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 public class EventNotificationMessageFactory {
 
-    public String getEventNotificationMessage(SseEventType sseEventType) {
-        switch (sseEventType) {
+    public String getEventNotificationMessage(EventType eventType) {
+        switch (eventType) {
             case NEW_CHAT_MESSAGE -> {
                 return "New chat message";
             }

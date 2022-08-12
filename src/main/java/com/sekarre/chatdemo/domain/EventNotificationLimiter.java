@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.domain;
 
+import com.sekarre.chatdemo.domain.enums.EventType;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ public class EventNotificationLimiter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String channelId;
+    private String destinationId;
+    private EventType eventType;
     private Long userId;
 }

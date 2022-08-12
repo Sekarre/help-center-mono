@@ -11,7 +11,7 @@ public interface CommentService {
 
     List<CommentResponseDTO> getAllIssueComments(Long issueId);
 
-    void createNewCommentWithStatusChanged(CommentCreateRequestDTO commentCreateRequestDTO, Long issueId);
+    void createNewComment(CommentCreateRequestDTO commentCreateRequestDTO, Long issueId);
 
     void createNewCommentWithStatusChanged(IssueStatusChangeDTO issueStatusChangeDTO, Issue issue);
 }

@@ -5,7 +5,7 @@ import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.ChatMessage;
 import com.sekarre.chatdemo.domain.User;
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import com.sekarre.chatdemo.exceptions.chat.ChatNotFoundException;
 import com.sekarre.chatdemo.mappers.ChatMapper;
 import com.sekarre.chatdemo.mappers.ChatMessageMapper;
@@ -72,7 +72,7 @@ public class ChatServiceImpl implements ChatService {
 
     private void sendEventMessage(String channelId, ChatMessage chatMessage) {
         eventEmitterService.sendNewEventMessage(
-                SseEventType.NEW_CHAT_MESSAGE,
+                EventType.NEW_CHAT_MESSAGE,
                 channelId,
                 chatMessage.getChat().getUsers().stream()
                         .map(User::getId)

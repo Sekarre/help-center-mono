@@ -2,6 +2,7 @@ package com.sekarre.chatdemo.listeners;
 
 import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import com.sekarre.chatdemo.exceptions.handler.ListenerErrorHandler;
 import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
 import com.sekarre.chatdemo.services.EventNotificationService;
@@ -42,7 +43,8 @@ public class ChatListener {
             return;
         }
         destinationTracker.remove(headers.getSessionId());
-        eventNotificationService.startNotificationForChannel(getChannelIdFromDestinationHeader(destination), user.getId());
+        eventNotificationService.startNotificationForDestination(
+                getChannelIdFromDestinationHeader(destination), user.getId(), EventType.CHAT);
         simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getGoodbyeChatMessage(user.getName() + " " + user.getLastname()));
     }
@@ -57,7 +59,8 @@ public class ChatListener {
             return;
         }
         destinationTracker.put(headers.getSessionId(), destination);
-        eventNotificationService.stopNotificationForChannel(getChannelIdFromDestinationHeader(destination), user.getId());
+        eventNotificationService.stopNotificationForDestination(
+                getChannelIdFromDestinationHeader(destination), user.getId(), EventType.CHAT);
         simpMessagingTemplate.convertAndSend(destination,
                 ChatMessageBotFactory.getWelcomeChatMessage(user.getName() + " " + user.getLastname()));
     }

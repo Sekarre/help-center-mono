@@ -1,6 +1,6 @@
 package com.sekarre.chatdemo.domain;
 
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -26,9 +26,9 @@ public class EventNotification {
 
     private Long userId;
 
-    private String channelId;
+    private String destinationId;
 
-    private SseEventType sseEventType;
+    private EventType eventType;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

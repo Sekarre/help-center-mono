@@ -1,27 +1,27 @@
 package com.sekarre.chatdemo.services;
 
 import com.sekarre.chatdemo.DTO.EventNotificationDTO;
-import com.sekarre.chatdemo.domain.enums.SseEventType;
+import com.sekarre.chatdemo.domain.enums.EventType;
 
 import java.util.List;
 
 public interface EventNotificationService {
 
-    void saveEventNotification(SseEventType sseEventType, String channelId, Long userId);
+    void saveEventNotification(EventType eventType, String destinationId, Long userId);
 
     List<EventNotificationDTO> getAllRemainingNotifications();
 
-    void markNotificationAsRead(String channelId);
+    void markNotificationAsRead(String destinationId, String eventType);
 
-    void stopNotificationForChannel(String channelId, Long userId);
+    void stopNotificationForDestination(String destinationId, Long userId, EventType eventType);
 
     /***
-     * returns true if notifications to channel has been stopped, false otherwise
-     * @param channelId
+     * returns true if notifications to destination has been stopped, false otherwise
+     * @param destinationId
      * @param userId
      * @return
      */
-    boolean isNotificationStopped(String channelId, Long userId);
+    boolean isNotificationStopped(String destinationId, Long userId, EventType eventType);
 
-    void startNotificationForChannel(String channelId, Long userId);
+    void startNotificationForDestination(String destinationId, Long userId, EventType eventType);
 }
