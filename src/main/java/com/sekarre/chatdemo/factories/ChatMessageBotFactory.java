@@ -2,6 +2,8 @@ package com.sekarre.chatdemo.factories;
 
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
 
+import static com.sekarre.chatdemo.util.DateUtil.getCurrentDateTime;
+
 public class ChatMessageBotFactory {
 
     public static final String botName = "ChatInfo";
@@ -12,6 +14,7 @@ public class ChatMessageBotFactory {
                 .message(user + " joined chat")
                 .senderName(botName)
                 .senderId(botId)
+                .createdDateTime(getCurrentDateTime())
                 .build();
     }
 
@@ -20,6 +23,7 @@ public class ChatMessageBotFactory {
                 .message(user + " left chat")
                 .senderName(botName)
                 .senderId(botId)
+                .createdDateTime(getCurrentDateTime())
                 .build();
     }
 }
