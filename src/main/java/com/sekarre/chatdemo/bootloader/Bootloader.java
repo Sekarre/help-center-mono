@@ -2,15 +2,18 @@ package com.sekarre.chatdemo.bootloader;
 
 import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.IssueType;
+import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.ChatRepository;
 import com.sekarre.chatdemo.repositories.IssueTypeRepository;
+import com.sekarre.chatdemo.repositories.RoleRepository;
 import com.sekarre.chatdemo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,35 +24,98 @@ public class Bootloader implements CommandLineRunner {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final IssueTypeRepository issueTypeRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public void run(String... args) {
-        createUsers();
+        createRoles();
+        createNormalUsers();
+        createSupportUsers();
+        createAdminUser();
         createDefaultChats();
         createDefaultIssueTypes();
     }
 
-    private void createUsers() {
+    private void createRoles() {
+        roleRepository.save(Role.builder()
+                .name("BASIC")
+                .build());
+        roleRepository.save(Role.builder()
+                .name("SUPPORT")
+                .build());
+        roleRepository.save(Role.builder()
+                .name("ADMIN")
+                .build());
+    }
+
+    private void createNormalUsers() {
+        Role role = roleRepository.findByName("BASIC").get();
+
         userRepository.save(User.builder()
                 .username("test1")
                 .password(passwordEncoder.encode("test1"))
-                .name("Adam")
-                .lastname("Kowalski")
+                .roles(Collections.singleton(role))
+                .firstName("Adam")
+                .lastName("Kowalski")
                 .build());
 
         userRepository.save(User.builder()
                 .username("test2")
                 .password(passwordEncoder.encode("test2"))
-                .name("Aneta")
-                .lastname("Nowak")
+                .roles(Collections.singleton(role))
+                .firstName("Aneta")
+                .lastName("Nowak")
                 .build());
 
 
         userRepository.save(User.builder()
                 .username("test3")
                 .password(passwordEncoder.encode("test3"))
-                .name("Mateusz")
-                .lastname("Lewandowski")
+                .roles(Collections.singleton(role))
+                .firstName("Mateusz")
+                .lastName("Lewandowski")
+                .build());
+    }
+
+    private void createSupportUsers() {
+        Role role = roleRepository.findByName("SUPPORT").get();
+
+        userRepository.save(User.builder()
+                .username("sup1")
+                .password(passwordEncoder.encode("sup1"))
+                .roles(Collections.singleton(role))
+                .firstName("INNOS")
+                .lastName("_1")
+                .build());
+
+        userRepository.save(User.builder()
+                .username("sup2")
+                .password(passwordEncoder.encode("sup2"))
+                .roles(Collections.singleton(role))
+                .firstName("INNOS")
+                .lastName("_2")
+                .build());
+
+
+        userRepository.save(User.builder()
+                .username("sup3")
+                .password(passwordEncoder.encode("sup3"))
+                .roles(Collections.singleton(role))
+                .firstName("INNOS")
+                .lastName("_3")
+                .build());
+
+    }
+
+    private void createAdminUser() {
+        Role role = roleRepository.findByName("ADMIN").get();
+
+        userRepository.save(User.builder()
+                .username("admin1")
+                .password(passwordEncoder.encode("admin"))
+                .roles(Collections.singleton(role))
+                .firstName("INNOS")
+                .lastName("_ADMIN")
                 .build());
     }
 

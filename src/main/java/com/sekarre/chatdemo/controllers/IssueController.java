@@ -5,6 +5,7 @@ import com.sekarre.chatdemo.DTO.IssueDTO;
 import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
 import com.sekarre.chatdemo.DTO.IssueTypeDTO;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
+import com.sekarre.chatdemo.security.perms.IssuePermission;
 import com.sekarre.chatdemo.services.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class IssueController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @IssuePermission
     @PatchMapping("/{issueId}")
     public ResponseEntity<?> changeIssueStatus(@PathVariable Long issueId,
                                                @RequestBody @Valid IssueStatusChangeDTO issueStatusChangeDTO) {
@@ -59,6 +61,7 @@ public class IssueController {
         return ResponseEntity.ok(issueService.getAllIssuesGrouped());
     }
 
+    @IssuePermission
     @GetMapping("/{issueId}")
     public ResponseEntity<IssueDTO> getIssue(@PathVariable Long issueId) {
         return ResponseEntity.ok(issueService.getIssueById(issueId));

@@ -2,8 +2,8 @@ package com.sekarre.chatdemo.config;
 
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.UserRepository;
-import com.sekarre.chatdemo.security.JwtTokenUtil;
-import com.sekarre.chatdemo.services.UserAuthorizationService;
+import com.sekarre.chatdemo.security.jwt.JwtTokenUtil;
+import com.sekarre.chatdemo.services.security.ChatAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +56,7 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
     @Value("${spring.rabbitmq.port}")
     private Integer port;
 
-    private final UserAuthorizationService userAuthorizationService;
+    private final ChatAuthorizationService chatAuthorizationService;
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -113,7 +113,7 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
                         case SUBSCRIBE -> {
                             SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(message);
                             User user = getUserFromHeaders(headers);
-                            userAuthorizationService.checkIfUserIsAuthorizedToJoinChannel(user, getChannelIdFromDestinationHeader(headers.getDestination()));
+                            chatAuthorizationService.checkIfUserAuthorizedToJoinChannel(user, getChannelIdFromDestinationHeader(headers.getDestination()));
                         }
                         case DISCONNECT -> {
                             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

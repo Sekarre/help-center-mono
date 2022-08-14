@@ -21,6 +21,9 @@ public abstract class IssueMapper {
 
     @Mapping(target = "issueTypeId", source = "issue.issueType.id")
     @Mapping(target = "channelId", source = "issue.chat.channelId")
+    @Mapping(target = "firstName", source = "issue.author.firstName")
+    @Mapping(target = "lastName", source = "issue.author.lastName")
+    @Mapping(target = "email", source = "issue.author.email")
     public abstract IssueDTO mapIssueToIssueDTO(Issue issue);
 
     public abstract Issue mapIssueDTOToIssue(IssueDTO issueDTO);

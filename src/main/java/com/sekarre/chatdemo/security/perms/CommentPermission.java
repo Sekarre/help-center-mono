@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = ElementType.METHOD)
-@PreAuthorize("hasRole('ADMIN') or @chatAuthorizationServiceImpl.checkIfUserAuthorizedToJoinChannel(#channelId)")
-public @interface ChatReadPermission {
+@PreAuthorize("hasRole('ADMIN') or @issueAuthorizationServiceImpl.checkIfUserAuthorizedToIssueComment(#issueId)")
+public @interface CommentPermission {
 }

@@ -1,4 +1,4 @@
-package com.sekarre.chatdemo.security;
+package com.sekarre.chatdemo.security.jwt;
 
 import com.sekarre.chatdemo.domain.User;
 import io.jsonwebtoken.*;
@@ -19,7 +19,7 @@ public class JwtTokenUtil {
 
     public String generateAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("userFullName", user.getName() + " " + user.getLastname());
+        claims.put("userFullName", user.getFirstName() + " " + user.getLastName());
         return buildToken(user.getUsername(), claims);
     }
 

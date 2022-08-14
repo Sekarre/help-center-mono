@@ -2,6 +2,7 @@ package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.ChatInfoDTO;
 import com.sekarre.chatdemo.DTO.ChatMessageDTO;
+import com.sekarre.chatdemo.security.perms.AdminPermission;
 import com.sekarre.chatdemo.security.perms.ChatReadPermission;
 import com.sekarre.chatdemo.services.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,14 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getAllChatMessages(channelId));
     }
 
+    //todo: change to only admin/support later
     @PatchMapping("/{channelId}")
     public ResponseEntity<?> joinChat(@PathVariable String channelId) {
         chatService.joinChat(channelId);
         return ResponseEntity.ok().build();
     }
 
+    @AdminPermission
     @PostMapping
     public ResponseEntity<ChatInfoDTO> createNewChat() {
         return ResponseEntity.ok(chatService.createNewChat());

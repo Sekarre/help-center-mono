@@ -1,11 +1,10 @@
-package com.sekarre.chatdemo.services.impl;
+package com.sekarre.chatdemo.services.security.impl;
 
 import com.sekarre.chatdemo.DTO.auth.TokenResponse;
 import com.sekarre.chatdemo.DTO.auth.UserCredentials;
 import com.sekarre.chatdemo.domain.User;
-import com.sekarre.chatdemo.repositories.UserRepository;
-import com.sekarre.chatdemo.security.JwtTokenUtil;
-import com.sekarre.chatdemo.services.AuthService;
+import com.sekarre.chatdemo.security.jwt.JwtTokenUtil;
+import com.sekarre.chatdemo.services.security.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;

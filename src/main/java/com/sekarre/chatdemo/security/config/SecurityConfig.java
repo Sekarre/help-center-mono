@@ -1,7 +1,7 @@
 package com.sekarre.chatdemo.security.config;
 
 import com.sekarre.chatdemo.config.ProfilesHolder;
-import com.sekarre.chatdemo.security.JwtTokenFilter;
+import com.sekarre.chatdemo.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

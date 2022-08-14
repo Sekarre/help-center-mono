@@ -8,7 +8,7 @@ import org.mapstruct.*;
 public abstract class ChatMessageMapper {
 
     @Mapping(target = "senderId", source = "chatMessage.sender.id")
-    @Mapping(target = "senderName", source = "chatMessage.sender.name")
+    @Mapping(target = "senderName", source = "chatMessage.sender.firstName")
     public abstract ChatMessageDTO mapMessageToChatMessageDTO(ChatMessage chatMessage);
 
     public abstract ChatMessage mapChatMessageDTOToMessage(ChatMessageDTO chatMessageDTO);

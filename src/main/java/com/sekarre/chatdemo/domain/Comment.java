@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +21,7 @@ public class Comment {
     private String fullName;
     private String content;
     private IssueStatus issueStatus;
+    private Long userId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

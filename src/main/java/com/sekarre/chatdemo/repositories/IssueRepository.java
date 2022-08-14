@@ -3,6 +3,7 @@ package com.sekarre.chatdemo.repositories;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface IssueRepository extends JpaRepository<Issue, Long> {
+
+    @Query("select i from Issue i left join fetch i.participants left join i.author where i.id = ?1")
+    Optional<Issue> findByIdWithParticipantsAndAuthor(Long issuesId);
 
     Optional<Issue> findByAuthorId(Long userId);
 

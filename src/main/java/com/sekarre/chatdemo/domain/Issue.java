@@ -23,9 +23,6 @@ public class Issue {
     private Long id;
 
     private String title;
-    private String firstName;
-    private String lastName;
-    private String email;
 
     @Lob
     private String issue;

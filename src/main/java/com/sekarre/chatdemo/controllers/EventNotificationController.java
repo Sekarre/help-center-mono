@@ -1,6 +1,7 @@
 package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.EventNotificationDTO;
+import com.sekarre.chatdemo.security.perms.EventNotificationPermission;
 import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class EventNotificationController {
         return eventNotificationService.getAllUnreadNotifications();
     }
 
+    @EventNotificationPermission
     @PatchMapping("/{destinationId}")
     public void markEventNotificationAsRead(@PathVariable String destinationId, @RequestParam String eventType) {
         eventNotificationService.markNotificationAsRead(destinationId, eventType);

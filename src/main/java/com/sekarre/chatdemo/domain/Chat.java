@@ -31,6 +31,7 @@ public class Chat {
     @OneToOne(mappedBy = "chat", fetch = FetchType.LAZY)
     private Issue issue;
 
+    @Builder.Default
     @OneToMany(mappedBy = "chat")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
@@ -43,8 +44,7 @@ public class Chat {
 
     @Builder.Default
     @ManyToMany
-    @JoinTable(
-            name = "chat_has_user",
+    @JoinTable(name = "chat_has_user",
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();

@@ -1,34 +1,35 @@
-package com.sekarre.chatdemo.services.impl;
+package com.sekarre.chatdemo.services.security.impl;
 
 import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.exceptions.chat.ChatAuthorizationException;
 import com.sekarre.chatdemo.exceptions.chat.ChatNotFoundException;
 import com.sekarre.chatdemo.repositories.ChatRepository;
-import com.sekarre.chatdemo.repositories.EventNotificationRepository;
-import com.sekarre.chatdemo.services.UserAuthorizationService;
-import com.sekarre.chatdemo.security.UserDetailsHelper;
+import com.sekarre.chatdemo.services.security.ChatAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.sekarre.chatdemo.security.UserDetailsHelper.getCurrentUser;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class UserAuthorizationServiceImpl implements UserAuthorizationService {
+public class ChatAuthorizationServiceImpl implements ChatAuthorizationService {
 
     private final ChatRepository chatRepository;
 
     @Override
-    public boolean checkIfUserIsAuthorizedToJoinChannel(String channelId) {
-        if (!getChatByChannelIdWithUsers(channelId).getUsers().contains(UserDetailsHelper.getCurrentUser())) {
+    public boolean checkIfUserAuthorizedToJoinChannel(String channelId) {
+        Chat chat = getChatByChannelIdWithUsers(channelId);
+        if (!chat.getUsers().contains(getCurrentUser()) && !chat.getAdminUser().equals(getCurrentUser())) {
             throw new ChatAuthorizationException("User is not authorized to join channel with channel id: " + channelId);
         }
         return true;
     }
 
     @Override
-    public boolean checkIfUserIsAuthorizedToJoinChannel(User user, String channelId) {
+    public boolean checkIfUserAuthorizedToJoinChannel(User user, String channelId) {
         if (!getChatByChannelIdWithUsers(channelId).getUsers().contains(user)) {
             throw new ChatAuthorizationException("User is not authorized to join channel with channel id: " + channelId);
         }

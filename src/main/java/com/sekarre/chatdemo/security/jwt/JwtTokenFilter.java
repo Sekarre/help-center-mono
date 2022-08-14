@@ -1,8 +1,9 @@
-package com.sekarre.chatdemo.security;
+package com.sekarre.chatdemo.security.jwt;
 
 import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.UserRepository;
+import com.sekarre.chatdemo.security.HttpParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;

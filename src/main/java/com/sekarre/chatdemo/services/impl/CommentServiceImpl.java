@@ -50,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
     public void createNewComment(CommentCreateRequestDTO commentCreateRequestDTO, Long issueId) {
         Issue issue = getIssueById(issueId);
         Comment comment = getComment(commentCreateRequestDTO, issue);
+        comment.setUserId(getCurrentUser().getId());
         if (Objects.nonNull(commentCreateRequestDTO.getReplyCommentId())) {
             comment.setReplyComment(getCommentById(commentCreateRequestDTO.getReplyCommentId()));
         }
@@ -59,7 +60,6 @@ public class CommentServiceImpl implements CommentService {
         senNewCommentEventMessage(issueId, issue);
     }
 
-    //fixme: check this one
     private void senNewCommentEventMessage(Long issueId, Issue issue) {
         List<Long> usersId = new ArrayList<>();
         issue.getParticipants().stream()

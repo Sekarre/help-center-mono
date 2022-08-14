@@ -46,7 +46,7 @@ public class ChatListener {
         eventNotificationService.startNotificationForDestination(
                 getChannelIdFromDestinationHeader(destination), user.getId(), EventType.NEW_CHAT_MESSAGE);
         simpMessagingTemplate.convertAndSend(destination,
-                ChatMessageBotFactory.getGoodbyeChatMessage(user.getName() + " " + user.getLastname()));
+                ChatMessageBotFactory.getGoodbyeChatMessage(user.getFirstName() + " " + user.getLastName()));
     }
 
     @ListenerErrorHandler
@@ -62,6 +62,6 @@ public class ChatListener {
         eventNotificationService.stopNotificationForDestination(
                 getChannelIdFromDestinationHeader(destination), user.getId(), EventType.NEW_CHAT_MESSAGE);
         simpMessagingTemplate.convertAndSend(destination,
-                ChatMessageBotFactory.getWelcomeChatMessage(user.getName() + " " + user.getLastname()));
+                ChatMessageBotFactory.getWelcomeChatMessage(user.getFirstName() + " " + user.getLastName()));
     }
 }

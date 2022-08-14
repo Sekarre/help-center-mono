@@ -3,12 +3,11 @@ package com.sekarre.chatdemo.domain;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Table(name = "Users")
 @Entity
@@ -17,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = {"id", "username", "name", "lastname"})
+@EqualsAndHashCode(of = {"id", "username", "firstName", "lastName", "email"})
 public class User implements UserDetails, CredentialsContainer {
 
     @Id
@@ -26,25 +25,38 @@ public class User implements UserDetails, CredentialsContainer {
 
     private String username;
     private String password;
-    private String name;
-    private String lastname;
+    private String firstName;
+    private String lastName;
+    private String email;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(name = "chat_has_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private List<Chat> chats = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(name = "issue_has_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "issue_id"))
     private List<Issue> issues = new ArrayList<>();
 
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "Role_has_User",
+            joinColumns = {@JoinColumn(name = "User_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "Role_id", referencedColumnName = "id")})
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Set<Role> roles = this.getRoles();
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
     }
 
     @Override
