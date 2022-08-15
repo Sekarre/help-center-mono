@@ -1,9 +1,6 @@
 package com.sekarre.chatdemo.controllers;
 
-import com.sekarre.chatdemo.DTO.GroupedIssueDTO;
-import com.sekarre.chatdemo.DTO.IssueDTO;
-import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
-import com.sekarre.chatdemo.DTO.IssueTypeDTO;
+import com.sekarre.chatdemo.DTO.*;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.security.perms.IssuePermission;
 import com.sekarre.chatdemo.services.IssueService;
@@ -57,6 +54,12 @@ public class IssueController {
                                              @RequestBody Long[] usersId) {
         issueService.addUsersToIssue(issueId, usersId);
         return ResponseEntity.ok().build();
+    }
+
+    @IssuePermission
+    @GetMapping("/{issueId}/participants")
+    public ResponseEntity<List<UserDTO>> getIssueParticipants(@PathVariable Long issueId) {
+        return ResponseEntity.ok(issueService.getIssueParticipants(issueId));
     }
 
     @GetMapping

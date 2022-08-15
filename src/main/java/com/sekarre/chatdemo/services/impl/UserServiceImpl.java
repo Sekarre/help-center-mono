@@ -1,6 +1,7 @@
 package com.sekarre.chatdemo.services.impl;
 
 import com.sekarre.chatdemo.DTO.UserDTO;
+import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.exceptions.UserNotFoundException;
@@ -37,6 +38,13 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " not found"));
+    }
+
+    @Override
+    public List<UserDTO> getParticipantsByIssue(Issue issue) {
+        return issue.getParticipants().stream()
+                .map(userMapper::mapUserToUserDTO)
+                .collect(Collectors.toList());
     }
 
     private Role getRoleByName(String roleName) {

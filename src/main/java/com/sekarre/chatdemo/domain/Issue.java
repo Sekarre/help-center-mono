@@ -8,9 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -58,10 +56,10 @@ public class Issue {
     @JoinTable(name = "issue_has_user",
             joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> participants = new HashSet<>();
+    private List<User> participants = new ArrayList<>();
 
     public void addParticipant(User user) {
-        if (user == null) {
+        if (user == null || this.participants.contains(user)) {
             return;
         }
         this.participants.add(user);

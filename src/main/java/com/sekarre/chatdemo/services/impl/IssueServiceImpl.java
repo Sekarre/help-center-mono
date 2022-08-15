@@ -1,9 +1,6 @@
 package com.sekarre.chatdemo.services.impl;
 
-import com.sekarre.chatdemo.DTO.GroupedIssueDTO;
-import com.sekarre.chatdemo.DTO.IssueDTO;
-import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
-import com.sekarre.chatdemo.DTO.IssueTypeDTO;
+import com.sekarre.chatdemo.DTO.*;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
@@ -70,6 +67,7 @@ public class IssueServiceImpl implements IssueService {
     public void createNewIssue(IssueDTO issueDTO) {
         Issue issue = issueMapper.mapIssueDTOToIssue(issueDTO);
         issue.setAuthor(getCurrentUser());
+        issue.addParticipant(getCurrentUser());
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
         issue.setIssueStatus(IssueStatus.PENDING);
         issue.setChat(chatService.createNewChat(issueDTO.getTitle()));
@@ -95,6 +93,11 @@ public class IssueServiceImpl implements IssueService {
             issue.addParticipant(userService.getUserById(userId));
         }
         issueRepository.save(issue);
+    }
+
+    @Override
+    public List<UserDTO> getIssueParticipants(Long issueId) {
+        return userService.getParticipantsByIssue(getIssueEntityById(issueId));
     }
 
     @Override
