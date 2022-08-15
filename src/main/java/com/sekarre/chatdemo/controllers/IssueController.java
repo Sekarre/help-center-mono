@@ -51,6 +51,14 @@ public class IssueController {
         return ResponseEntity.ok().build();
     }
 
+    @IssuePermission
+    @PutMapping("/{issueId}/user-add")
+    public ResponseEntity<?> addUsersToIssue(@PathVariable Long issueId,
+                                             @RequestBody Long[] usersId) {
+        issueService.addUsersToIssue(issueId, usersId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false) IssueStatus status) {
         return ResponseEntity.ok(issueService.getAllIssuesWithStatus(status));

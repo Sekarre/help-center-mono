@@ -14,6 +14,7 @@ import com.sekarre.chatdemo.repositories.IssueTypeRepository;
 import com.sekarre.chatdemo.services.ChatService;
 import com.sekarre.chatdemo.services.CommentService;
 import com.sekarre.chatdemo.services.IssueService;
+import com.sekarre.chatdemo.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class IssueServiceImpl implements IssueService {
     private final IssueMapper issueMapper;
     private final ChatService chatService;
     private final CommentService commentService;
+    private final UserService userService;
 
     @Override
     public List<IssueTypeDTO> getAllIssueTypes() {
@@ -83,6 +85,15 @@ public class IssueServiceImpl implements IssueService {
         }
         commentService.createNewCommentWithStatusChanged(issueStatusChangeDTO, issue);
         issue.setIssueStatus(newIssueStatus);
+        issueRepository.save(issue);
+    }
+
+    @Override
+    public void addUsersToIssue(Long issueId, Long[] usersId) {
+        Issue issue = getIssueEntityById(issueId);
+        for (Long userId : usersId) {
+            issue.addParticipant(userService.getUserById(userId));
+        }
         issueRepository.save(issue);
     }
 

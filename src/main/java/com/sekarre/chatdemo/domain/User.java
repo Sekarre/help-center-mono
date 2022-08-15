@@ -95,4 +95,8 @@ public class User implements UserDetails, CredentialsContainer {
     public void eraseCredentials() {
         this.password = null;
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

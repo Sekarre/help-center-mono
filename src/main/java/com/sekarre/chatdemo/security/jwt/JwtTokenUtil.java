@@ -1,11 +1,13 @@
 package com.sekarre.chatdemo.security.jwt;
 
+import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -20,6 +22,7 @@ public class JwtTokenUtil {
     public String generateAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("userFullName", user.getFirstName() + " " + user.getLastName());
+        claims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
         return buildToken(user.getUsername(), claims);
     }
 

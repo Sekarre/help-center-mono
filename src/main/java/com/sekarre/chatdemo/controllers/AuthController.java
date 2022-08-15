@@ -20,9 +20,8 @@ import static com.sekarre.chatdemo.controllers.AuthController.BASE_AUTH_URL;
 @RequestMapping(value = BASE_AUTH_URL)
 public class AuthController {
 
-    private final AuthService authService;
-
     public static final String BASE_AUTH_URL = "/api/v1/auth";
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserCredentials userCredentials) {

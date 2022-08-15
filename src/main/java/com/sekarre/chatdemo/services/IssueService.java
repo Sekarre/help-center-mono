@@ -23,6 +23,8 @@ public interface IssueService {
 
     void changeIssueStatus(Long issueId, IssueStatusChangeDTO issueStatusChangeDTO);
 
+    void addUsersToIssue(Long issueId, Long[] usersId);
+
     List<IssueDTO> getAllIssuesWithStatus(IssueStatus status);
 
     GroupedIssueDTO getAllIssuesGrouped();
