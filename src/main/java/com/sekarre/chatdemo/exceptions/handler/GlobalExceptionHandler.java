@@ -1,12 +1,10 @@
 package com.sekarre.chatdemo.exceptions.handler;
 
-import com.sekarre.chatdemo.exceptions.chat.ChatAuthorizationException;
-import com.sekarre.chatdemo.exceptions.chat.ChatNotFoundException;
-import com.sekarre.chatdemo.exceptions.chat.GenericChatException;
+import com.sekarre.chatdemo.exceptions.AppRuntimeException;
 import com.sekarre.chatdemo.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,20 +12,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {ChatNotFoundException.class, ChatAuthorizationException.class})
-    public ResponseEntity<CustomErrorMessage> handleChatNotFoundException(GenericChatException e) {
+    @ExceptionHandler(value = AppRuntimeException.class)
+    public ResponseEntity<ErrorMessage> handleChatNotFoundException(AppRuntimeException e) {
         log.error(e.getMessage());
         return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
     }
 
-    @ExceptionHandler(value = BadCredentialsException.class)
-    public ResponseEntity<CustomErrorMessage> handleAuthenticationException(BadCredentialsException e) {
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<ErrorMessage> handleAuthenticationException(AuthenticationException e) {
         log.error(e.getMessage());
         return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
     }
 
-    private CustomErrorMessage getCustomErrorMessage(String e) {
-        return CustomErrorMessage.builder()
+    private ErrorMessage getCustomErrorMessage(String e) {
+        return ErrorMessage.builder()
                 .cause(e)
                 .timestamp(DateUtil.getCurrentDateTime())
                 .build();

@@ -4,8 +4,8 @@ import com.sekarre.chatdemo.DTO.UserDTO;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
-import com.sekarre.chatdemo.exceptions.UserNotFoundException;
-import com.sekarre.chatdemo.exceptions.roles.RoleNotFoundException;
+import com.sekarre.chatdemo.exceptions.user.UserNotFoundException;
+import com.sekarre.chatdemo.exceptions.user.RoleNotFoundException;
 import com.sekarre.chatdemo.mappers.UserMapper;
 import com.sekarre.chatdemo.repositories.RoleRepository;
 import com.sekarre.chatdemo.repositories.UserRepository;
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public List<UserDTO> getUsers(String roleName) {
+    public List<UserDTO> getUsersByRoleName(String roleName) {
         Role role = getRoleByName(roleName);
         return userRepository.findAllByRolesContaining(role).stream()
                 .map(userMapper::mapUserToUserDTO)

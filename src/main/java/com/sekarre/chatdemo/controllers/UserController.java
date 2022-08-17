@@ -26,6 +26,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam String roleName) {
-        return ResponseEntity.ok(userService.getUsers(roleName));
+        return ResponseEntity.ok(userService.getUsersByRoleName(roleName));
     }
 }

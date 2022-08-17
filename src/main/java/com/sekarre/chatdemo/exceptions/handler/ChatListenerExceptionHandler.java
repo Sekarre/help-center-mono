@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatListenerExceptionHandler {
 
-    @Around(value = "@annotation(ListenerErrorHandler)")
+    @Around(value = "@annotation(com.sekarre.chatdemo.exceptions.handler.EventListenerErrorHandling)")
     public Object handleException(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         try {
             return proceedingJoinPoint.proceed();

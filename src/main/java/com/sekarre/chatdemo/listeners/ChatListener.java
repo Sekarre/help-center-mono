@@ -3,7 +3,7 @@ package com.sekarre.chatdemo.listeners;
 import com.sekarre.chatdemo.config.ProfilesHolder;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.domain.enums.EventType;
-import com.sekarre.chatdemo.exceptions.handler.ListenerErrorHandler;
+import com.sekarre.chatdemo.exceptions.handler.EventListenerErrorHandling;
 import com.sekarre.chatdemo.factories.ChatMessageBotFactory;
 import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class ChatListener {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final EventNotificationService eventNotificationService;
 
-    @ListenerErrorHandler
+    @EventListenerErrorHandling
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
@@ -49,7 +49,7 @@ public class ChatListener {
                 ChatMessageBotFactory.getGoodbyeChatMessage(user.getFirstName() + " " + user.getLastName()));
     }
 
-    @ListenerErrorHandler
+    @EventListenerErrorHandling
     @EventListener
     public void onSubscribeEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());

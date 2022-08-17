@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomErrorMessage {
+public class ErrorMessage {
 
     private String cause;
 
