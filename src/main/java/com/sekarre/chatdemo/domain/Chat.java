@@ -44,7 +44,7 @@ public class Chat {
 
     @Builder.Default
     @ManyToMany
-    @JoinTable(name = "chat_has_user",
+    @JoinTable(name = "Chat_User",
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();

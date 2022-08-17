@@ -1,6 +1,8 @@
 package com.sekarre.chatdemo.domain;
 
 
+import com.sekarre.chatdemo.domain.enums.RoleName;
+import com.sekarre.chatdemo.domain.enums.Specialization;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,7 +21,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    private RoleName name;
+
+    private Specialization specialization;
 
     @Builder.Default
     @ManyToMany(mappedBy = "roles")

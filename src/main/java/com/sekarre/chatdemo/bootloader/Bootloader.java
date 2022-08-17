@@ -4,6 +4,8 @@ import com.sekarre.chatdemo.domain.Chat;
 import com.sekarre.chatdemo.domain.IssueType;
 import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
+import com.sekarre.chatdemo.domain.enums.IssueTypeName;
+import com.sekarre.chatdemo.domain.enums.RoleName;
 import com.sekarre.chatdemo.repositories.ChatRepository;
 import com.sekarre.chatdemo.repositories.IssueTypeRepository;
 import com.sekarre.chatdemo.repositories.RoleRepository;
@@ -38,18 +40,18 @@ public class Bootloader implements CommandLineRunner {
 
     private void createRoles() {
         roleRepository.save(Role.builder()
-                .name("BASIC")
+                .name(RoleName.BASIC)
                 .build());
         roleRepository.save(Role.builder()
-                .name("SUPPORT")
+                .name(RoleName.SUPPORT)
                 .build());
         roleRepository.save(Role.builder()
-                .name("ADMIN")
+                .name(RoleName.ADMIN)
                 .build());
     }
 
     private void createNormalUsers() {
-        Role role = roleRepository.findByName("BASIC").get();
+        Role role = roleRepository.findByName(RoleName.BASIC).get();
 
         userRepository.save(User.builder()
                 .username("test1")
@@ -78,7 +80,7 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createSupportUsers() {
-        Role role = roleRepository.findByName("SUPPORT").get();
+        Role role = roleRepository.findByName(RoleName.SUPPORT).get();
 
         userRepository.save(User.builder()
                 .username("sup1")
@@ -108,7 +110,7 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createAdminUser() {
-        Role role = roleRepository.findByName("ADMIN").get();
+        Role role = roleRepository.findByName(RoleName.ADMIN).get();
 
         userRepository.save(User.builder()
                 .username("admin1")
@@ -120,9 +122,11 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createDefaultIssueTypes() {
-        issueTypeRepository.save(IssueType.builder().name("Game issue").build());
-        issueTypeRepository.save(IssueType.builder().name("Client issue").build());
-        issueTypeRepository.save(IssueType.builder().name("Other").build());
+        issueTypeRepository.save(IssueType.builder().name(IssueTypeName.GAME_ISSUE).build());
+        issueTypeRepository.save(IssueType.builder().name(IssueTypeName.ACCOUNT_ISSUE).build());
+        issueTypeRepository.save(IssueType.builder().name(IssueTypeName.SOCIAL).build());
+        issueTypeRepository.save(IssueType.builder().name(IssueTypeName.OTHER).build());
+        issueTypeRepository.save(IssueType.builder().name(IssueTypeName.GAME_CLIENT_ISSUE).build());
     }
 
     private void createDefaultChats() {

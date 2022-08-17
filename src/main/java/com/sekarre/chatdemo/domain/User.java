@@ -31,22 +31,22 @@ public class User implements UserDetails, CredentialsContainer {
 
     @Builder.Default
     @ManyToMany
-    @JoinTable(name = "chat_has_user",
+    @JoinTable(name = "Chat_User",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private List<Chat> chats = new ArrayList<>();
 
     @Builder.Default
     @ManyToMany
-    @JoinTable(name = "issue_has_user",
+    @JoinTable(name = "Issue_User",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "issue_id"))
     private List<Issue> issues = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinTable(name = "Role_has_User",
-            joinColumns = {@JoinColumn(name = "User_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "Role_id", referencedColumnName = "id")})
+    @JoinTable(name = "Role_User",
+            joinColumns = {@JoinColumn(name = "User_id")},
+            inverseJoinColumns = {@JoinColumn(name = "Role_id")})
     private Set<Role> roles = new HashSet<>();
 
     @Override
@@ -54,7 +54,7 @@ public class User implements UserDetails, CredentialsContainer {
         Set<Role> roles = this.getRoles();
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+            authorities.add(new SimpleGrantedAuthority(role.getName().name()));
         }
         return authorities;
     }

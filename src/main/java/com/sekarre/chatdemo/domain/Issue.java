@@ -53,7 +53,7 @@ public class Issue {
 
     @Builder.Default
     @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "issue_has_user",
+    @JoinTable(name = "Issue_User",
             joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();

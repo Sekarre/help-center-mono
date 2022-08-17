@@ -1,5 +1,6 @@
 package com.sekarre.chatdemo.domain;
 
+import com.sekarre.chatdemo.domain.enums.IssueTypeName;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -19,7 +20,7 @@ public class IssueType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private IssueTypeName name;
 
     @Builder.Default
     private boolean isAvailable = true;

@@ -4,6 +4,7 @@ import com.sekarre.chatdemo.DTO.UserDTO;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
+import com.sekarre.chatdemo.domain.enums.RoleName;
 import com.sekarre.chatdemo.exceptions.user.UserNotFoundException;
 import com.sekarre.chatdemo.exceptions.user.RoleNotFoundException;
 import com.sekarre.chatdemo.mappers.UserMapper;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Role getRoleByName(String roleName) {
-        return roleRepository.findByName(roleName)
+        return roleRepository.findByName(Enum.valueOf(RoleName.class, roleName))
                 .orElseThrow(() -> new RoleNotFoundException("Role with name: " + roleName + " not found"));
     }
 }
