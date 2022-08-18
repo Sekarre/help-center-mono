@@ -7,10 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Entity
 @Getter
@@ -50,7 +47,7 @@ public class Issue {
     @ManyToOne
     private IssueType issueType;
 
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "author_id")
     @ManyToOne(cascade = CascadeType.MERGE)
     private User author;
 
@@ -59,8 +56,8 @@ public class Issue {
     @JoinTable(name = "Issue_User",
             joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @OrderBy("id asc")
-    private Set<User> participants = new TreeSet<>();
+    @OrderBy(value = "id asc")
+    private Set<User> participants = new LinkedHashSet<>();
 
     public void addParticipant(User user) {
         if (user == null || this.participants.contains(user)) {

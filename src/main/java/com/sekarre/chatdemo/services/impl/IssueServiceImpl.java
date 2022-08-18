@@ -5,6 +5,7 @@ import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
+import com.sekarre.chatdemo.domain.enums.RoleName;
 import com.sekarre.chatdemo.exceptions.issue.IssueNotFoundException;
 import com.sekarre.chatdemo.mappers.IssueMapper;
 import com.sekarre.chatdemo.repositories.IssueRepository;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.sekarre.chatdemo.security.UserDetailsHelper.checkForRole;
 import static com.sekarre.chatdemo.security.UserDetailsHelper.getCurrentUser;
 
 @Slf4j
@@ -105,21 +107,34 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public List<IssueDTO> getAllIssuesWithStatus(IssueStatus status) {
-        if (Objects.isNull(status)) {
-            return issueRepository.findAll().stream().map(issueMapper::mapIssueToIssueDTO).collect(Collectors.toList());
+        if (checkForRole(RoleName.ADMIN)) {
+            return issueRepository.findAll().stream()
+                    .map(issueMapper::mapIssueToIssueDTO)
+                    .collect(Collectors.toList());
         }
-        return issueRepository.findAllByIssueStatus(status).stream()
+        if (Objects.isNull(status)) {
+            return issueRepository.findAllByParticipantsContaining(getCurrentUser()).stream()
+                    .map(issueMapper::mapIssueToIssueDTO)
+                    .collect(Collectors.toList());
+        }
+        return issueRepository.findAllByIssueStatusAndParticipantsContaining(status, getCurrentUser()).stream()
                 .map(issueMapper::mapIssueToIssueDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public GroupedIssueDTO getAllIssuesGrouped() {
-        GroupedIssueDTO groupedIssueDTO = new GroupedIssueDTO();
-        issueRepository.findAll().stream()
-                .map(issueMapper::mapIssueToIssueDTO)
-                .forEach(groupedIssueDTO::addIssueDTO);
-        return groupedIssueDTO;
+    public GroupedByStatusIssueDTO getAllIssuesGrouped() {
+        GroupedByStatusIssueDTO groupedByStatusIssueDTO = new GroupedByStatusIssueDTO();
+        if (checkForRole(RoleName.ADMIN)) {
+            issueRepository.findAll().stream()
+                    .map(issueMapper::mapIssueToIssueDTO)
+                    .forEach(groupedByStatusIssueDTO::addIssueDTO);
+        } else {
+            issueRepository.findAllByParticipantsContaining(getCurrentUser()).stream()
+                    .map(issueMapper::mapIssueToIssueDTO)
+                    .forEach(groupedByStatusIssueDTO::addIssueDTO);
+        }
+        return groupedByStatusIssueDTO;
     }
 
     @Override

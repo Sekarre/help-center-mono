@@ -13,4 +13,5 @@ public class UserDTO {
     private Long id;
     private String fullName;
     private String roleName;
+    private String specialization;
 }

@@ -10,6 +10,8 @@ public interface UserService {
 
     List<UserDTO> getUsersByRoleName(String roleName);
 
+    List<UserDTO> getUsersByRoleNameAndNotInIssue(String roleName, Long issueId);
+
     User getUserById(Long userId);
 
     List<UserDTO> getParticipantsByIssue(Issue issue);

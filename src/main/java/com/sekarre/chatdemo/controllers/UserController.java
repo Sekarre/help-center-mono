@@ -28,4 +28,9 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam String roleName) {
         return ResponseEntity.ok(userService.getUsersByRoleName(roleName));
     }
+
+    @GetMapping("/issue")
+    public ResponseEntity<List<UserDTO>> getUniqueUsersForIssue(@RequestParam String roleName, @RequestParam Long issueId) {
+        return ResponseEntity.ok(userService.getUsersByRoleNameAndNotInIssue(roleName, issueId));
+    }
 }

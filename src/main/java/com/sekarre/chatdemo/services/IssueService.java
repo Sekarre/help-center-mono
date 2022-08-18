@@ -26,7 +26,7 @@ public interface IssueService {
 
     List<IssueDTO> getAllIssuesWithStatus(IssueStatus status);
 
-    GroupedIssueDTO getAllIssuesGrouped();
+    GroupedByStatusIssueDTO getAllIssuesGrouped();
 
     IssueDTO getIssueById(Long issueId);
 

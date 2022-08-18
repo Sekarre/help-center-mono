@@ -65,9 +65,6 @@ public class CommentServiceImpl implements CommentService {
         issue.getParticipants().stream()
                 .filter(user -> !user.getId().equals(getCurrentUser().getId()))
                 .forEach(user -> usersId.add(user.getId()));
-        if (!issue.getAuthor().getId().equals(getCurrentUser().getId())) {
-            usersId.add(issue.getAuthor().getId());
-        }
         eventEmitterService.sendNewEventMessage(
                 EventType.NEW_ISSUE_COMMENT, String.valueOf(issueId), usersId.toArray(Long[]::new));
     }

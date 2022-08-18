@@ -11,7 +11,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GroupedIssueDTO {
+public class GroupedByStatusIssueDTO {
 
     private List<IssueDTO> pendingIssues = new ArrayList<>();
     private List<IssueDTO> escalatingIssues = new ArrayList<>();

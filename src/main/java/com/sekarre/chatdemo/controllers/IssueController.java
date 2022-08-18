@@ -50,8 +50,7 @@ public class IssueController {
 
     @IssuePermission
     @PutMapping("/{issueId}/user-add")
-    public ResponseEntity<?> addUsersToIssue(@PathVariable Long issueId,
-                                             @RequestBody Long[] usersId) {
+    public ResponseEntity<?> addUsersToIssue(@PathVariable Long issueId, @RequestBody Long[] usersId) {
         issueService.addUsersToIssue(issueId, usersId);
         return ResponseEntity.ok().build();
     }
@@ -68,7 +67,7 @@ public class IssueController {
     }
 
     @GetMapping("/grouped")
-    public ResponseEntity<GroupedIssueDTO> getAllIssuesGrouped() {
+    public ResponseEntity<GroupedByStatusIssueDTO> getAllIssuesGrouped() {
         return ResponseEntity.ok(issueService.getAllIssuesGrouped());
     }
 

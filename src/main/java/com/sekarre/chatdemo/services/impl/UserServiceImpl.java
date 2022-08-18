@@ -30,6 +30,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDTO> getUsersByRoleNameAndNotInIssue(String roleName, Long issueId) {
+        return userRepository.findAllByRoleNameAndIssueIdNotEqual(roleName, issueId).stream()
+                .map(userMapper::mapUserToUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " not found"));

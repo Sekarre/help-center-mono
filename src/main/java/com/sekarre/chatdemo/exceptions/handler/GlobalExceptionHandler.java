@@ -5,6 +5,7 @@ import com.sekarre.chatdemo.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,6 +15,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = AppRuntimeException.class)
     public ResponseEntity<ErrorMessage> handleChatNotFoundException(AppRuntimeException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleAuthenticationException(UsernameNotFoundException e) {
         log.error(e.getMessage());
         return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
     }
