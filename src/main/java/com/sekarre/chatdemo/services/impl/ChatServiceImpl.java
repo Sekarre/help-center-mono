@@ -55,6 +55,16 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public Chat createNewChatWithUsers(String channelName, List<User> users) {
+        return chatRepository.save(Chat.builder()
+                .adminUser(getCurrentUser())
+                .users(users)
+                .channelId(getUniqueChannelId())
+                .channelName(channelName)
+                .build());
+    }
+
+    @Override
     public void joinChat(String channelId) {
         Chat chat = getChatByChannelId(channelId);
         chat.addUser(getCurrentUser());

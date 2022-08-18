@@ -3,6 +3,7 @@ package com.sekarre.chatdemo.services.impl;
 import com.sekarre.chatdemo.DTO.*;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
+import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.exceptions.issue.IssueNotFoundException;
 import com.sekarre.chatdemo.mappers.IssueMapper;
@@ -65,13 +66,14 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public void createNewIssue(IssueDTO issueDTO) {
+        User supportUser = userService.getAvailableSupportUser();
         Issue issue = issueMapper.mapIssueDTOToIssue(issueDTO);
         issue.setAuthor(getCurrentUser());
         issue.addParticipant(getCurrentUser());
-        issue.addParticipant(userService.getAvailableSupportUser());
+        issue.addParticipant(supportUser);
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
         issue.setIssueStatus(IssueStatus.PENDING);
-        issue.setChat(chatService.createNewChat(issueDTO.getTitle()));
+        issue.setChat(chatService.createNewChatWithUsers(issueDTO.getTitle(), List.of(getCurrentUser(), supportUser)));
         issueRepository.save(issue);
     }
 

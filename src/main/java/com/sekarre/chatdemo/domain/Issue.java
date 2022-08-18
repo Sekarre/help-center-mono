@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Getter
@@ -57,7 +59,8 @@ public class Issue {
     @JoinTable(name = "Issue_User",
             joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> participants = new ArrayList<>();
+    @OrderBy("id asc")
+    private Set<User> participants = new TreeSet<>();
 
     public void addParticipant(User user) {
         if (user == null || this.participants.contains(user)) {
