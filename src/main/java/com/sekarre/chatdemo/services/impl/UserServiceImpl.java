@@ -48,6 +48,12 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public User getAvailableSupportUser() {
+        return userRepository.findUsersWithLeastIssuesAndMatchingSpecialization()
+                .orElseThrow(() -> new IllegalStateException("Cannot find available users"));
+    }
+
     private Role getRoleByName(String roleName) {
         return roleRepository.findByName(Enum.valueOf(RoleName.class, roleName))
                 .orElseThrow(() -> new RoleNotFoundException("Role with name: " + roleName + " not found"));

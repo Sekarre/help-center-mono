@@ -13,4 +13,6 @@ public interface UserService {
     User getUserById(Long userId);
 
     List<UserDTO> getParticipantsByIssue(Issue issue);
+
+    User getAvailableSupportUser();
 }

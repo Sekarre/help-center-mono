@@ -68,6 +68,7 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = issueMapper.mapIssueDTOToIssue(issueDTO);
         issue.setAuthor(getCurrentUser());
         issue.addParticipant(getCurrentUser());
+        issue.addParticipant(userService.getAvailableSupportUser());
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
         issue.setIssueStatus(IssueStatus.PENDING);
         issue.setChat(chatService.createNewChat(issueDTO.getTitle()));

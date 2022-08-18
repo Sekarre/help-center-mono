@@ -6,6 +6,7 @@ import com.sekarre.chatdemo.domain.Role;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.domain.enums.IssueTypeName;
 import com.sekarre.chatdemo.domain.enums.RoleName;
+import com.sekarre.chatdemo.domain.enums.Specialization;
 import com.sekarre.chatdemo.repositories.ChatRepository;
 import com.sekarre.chatdemo.repositories.IssueTypeRepository;
 import com.sekarre.chatdemo.repositories.RoleRepository;
@@ -31,19 +32,46 @@ public class Bootloader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         createRoles();
-        createNormalUsers();
-        createSupportUsers();
-        createAdminUser();
+        createUsers();
         createDefaultChats();
         createDefaultIssueTypes();
     }
 
+    private void createUsers() {
+        if (userRepository.count() != 0) {
+            return;
+        }
+        createNormalUsers();
+        createAdminUser();
+        createSupportUsers();
+    }
+
     private void createRoles() {
+        if (roleRepository.count() != 0) {
+            return;
+        }
         roleRepository.save(Role.builder()
                 .name(RoleName.BASIC)
                 .build());
         roleRepository.save(Role.builder()
                 .name(RoleName.SUPPORT)
+                .specialization(Specialization.GAMES)
+                .build());
+        roleRepository.save(Role.builder()
+                .name(RoleName.SUPPORT)
+                .specialization(Specialization.SOCIAL)
+                .build());
+        roleRepository.save(Role.builder()
+                .name(RoleName.SUPPORT)
+                .specialization(Specialization.GENERAL_TECH)
+                .build());
+        roleRepository.save(Role.builder()
+                .name(RoleName.SUPPORT)
+                .specialization(Specialization.GAME_CLIENT)
+                .build());
+        roleRepository.save(Role.builder()
+                .name(RoleName.SUPPORT)
+                .specialization(Specialization.ACCOUNT)
                 .build());
         roleRepository.save(Role.builder()
                 .name(RoleName.ADMIN)
@@ -80,7 +108,7 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createSupportUsers() {
-        Role role = roleRepository.findByName(RoleName.SUPPORT).get();
+        Role role = roleRepository.findByNameAndSpecialization(RoleName.SUPPORT, Specialization.GAMES).get();
 
         userRepository.save(User.builder()
                 .username("sup1")
@@ -122,6 +150,9 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createDefaultIssueTypes() {
+        if (issueTypeRepository.count() != 0) {
+            return;
+        }
         issueTypeRepository.save(IssueType.builder().name(IssueTypeName.GAME_ISSUE).build());
         issueTypeRepository.save(IssueType.builder().name(IssueTypeName.ACCOUNT_ISSUE).build());
         issueTypeRepository.save(IssueType.builder().name(IssueTypeName.SOCIAL).build());
@@ -130,6 +161,9 @@ public class Bootloader implements CommandLineRunner {
     }
 
     private void createDefaultChats() {
+        if (chatRepository.count() != 0) {
+            return;
+        }
         chatRepository.save(Chat.builder().id(1L).channelId("Test1").channelName("T1").build());
         chatRepository.save(Chat.builder().id(2L).channelId("Test2").channelName("T2").build());
         chatRepository.save(Chat.builder().id(3L).channelId("Test3").channelName("T3").build());

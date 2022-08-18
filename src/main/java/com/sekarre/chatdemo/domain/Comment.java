@@ -20,6 +20,8 @@ public class Comment {
     private Long id;
     private String fullName;
     private String content;
+
+    @Enumerated(EnumType.STRING)
     private IssueStatus issueStatus;
     private Long userId;
 

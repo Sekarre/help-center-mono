@@ -27,6 +27,7 @@ public class Issue {
     @Lob
     private String issue;
 
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private IssueStatus issueStatus = IssueStatus.PENDING;
 
