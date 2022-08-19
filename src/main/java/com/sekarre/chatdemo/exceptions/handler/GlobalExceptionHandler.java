@@ -31,6 +31,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
     }
 
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.ok(getCustomErrorMessage(e.getMessage()));
+    }
+
     private ErrorMessage getCustomErrorMessage(String e) {
         return ErrorMessage.builder()
                 .cause(e)

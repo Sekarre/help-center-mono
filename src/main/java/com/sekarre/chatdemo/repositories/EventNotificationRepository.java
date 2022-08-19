@@ -16,4 +16,6 @@ public interface EventNotificationRepository extends JpaRepository<EventNotifica
     List<EventNotification> findAllByDestinationIdAndUserIdAndEventType(String destinationId, Long userId, EventType eventType);
 
     Optional<EventNotification> findFirstByDestinationIdAndUserIdAndEventType(String destinationId, Long userId, EventType eventType);
+
+    Long countAllByDestinationIdAndEventTypeAndUserIdAndReadIsFalse(String destinationId, EventType eventType, Long userId);
 }

@@ -52,7 +52,10 @@ public class EventEmitterServiceImpl implements EventEmitterService {
     public void sendNewEventMessage(EventType eventType, String destinationId) {
         Long userId = getCurrentUser().getId();
         try {
-            emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(destinationId).reconnectTime(500).build());
+            emitterMap.get(userId).send(SseEmitter.event()
+                    .name(eventType.name())
+                    .data(destinationId)
+                    .build());
         } catch (IOException e) {
             log.debug("Emitter send event failed for id: " + userId + " and event: " + eventType);
         }
@@ -64,7 +67,10 @@ public class EventEmitterServiceImpl implements EventEmitterService {
             try {
                 if (!eventNotificationService.isNotificationStopped(destinationId, userId, eventType)) {
                     if (emitterMap.containsKey(userId)) {
-                        emitterMap.get(userId).send(SseEmitter.event().name(eventType.name()).data(destinationId).reconnectTime(500).build());
+                        emitterMap.get(userId).send(SseEmitter.event()
+                                        .name(eventType.name())
+                                        .data(destinationId)
+                                        .build());
                     }
                     eventNotificationService.saveEventNotification(eventType, destinationId, userId);
                 }

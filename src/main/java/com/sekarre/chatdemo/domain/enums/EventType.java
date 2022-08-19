@@ -5,5 +5,6 @@ public enum EventType {
     REMOVED_FROM_CHAT,
     NEW_CHAT_MESSAGE,
     NEW_ISSUE_COMMENT,
-    NEW_ISSUE
+    NEW_ISSUE,
+    ASSIGNED_TO_ISSUE
 }

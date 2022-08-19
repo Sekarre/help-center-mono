@@ -21,7 +21,7 @@ public class GroupedByStatusIssueDTO {
 
     public void addIssueDTO(IssueDTO issueDTO) {
         if (Objects.isNull(issueDTO)) {
-            return ;
+            return;
         }
         switch (issueDTO.getIssueStatus()) {
             case PENDING -> pendingIssues.add(issueDTO);

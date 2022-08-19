@@ -4,16 +4,14 @@ import com.sekarre.chatdemo.DTO.*;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
 import com.sekarre.chatdemo.domain.User;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
 import com.sekarre.chatdemo.domain.enums.RoleName;
 import com.sekarre.chatdemo.exceptions.issue.IssueNotFoundException;
 import com.sekarre.chatdemo.mappers.IssueMapper;
 import com.sekarre.chatdemo.repositories.IssueRepository;
 import com.sekarre.chatdemo.repositories.IssueTypeRepository;
-import com.sekarre.chatdemo.services.ChatService;
-import com.sekarre.chatdemo.services.CommentService;
-import com.sekarre.chatdemo.services.IssueService;
-import com.sekarre.chatdemo.services.UserService;
+import com.sekarre.chatdemo.services.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +35,8 @@ public class IssueServiceImpl implements IssueService {
     private final ChatService chatService;
     private final CommentService commentService;
     private final UserService userService;
+    private final EventEmitterService eventEmitterService;
+    private final EventNotificationService eventNotificationService;
 
     @Override
     public List<IssueTypeDTO> getAllIssueTypes() {
@@ -76,7 +76,9 @@ public class IssueServiceImpl implements IssueService {
         issue.setIssueType(getIssueTypeById(issueDTO.getIssueTypeId()));
         issue.setIssueStatus(IssueStatus.PENDING);
         issue.setChat(chatService.createNewChatWithUsers(issueDTO.getTitle(), List.of(getCurrentUser(), supportUser)));
-        issueRepository.save(issue);
+        Issue savedIssue = issueRepository.save(issue);
+        eventEmitterService.sendNewEventMessage(
+                EventType.ASSIGNED_TO_ISSUE, savedIssue.getId().toString(), new Long[]{supportUser.getId()});
     }
 
     @Override
@@ -139,8 +141,12 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public IssueDTO getIssueById(Long issueId) {
-        return issueRepository.findById(issueId).map(issueMapper::mapIssueToIssueDTO)
+        IssueDTO issueDTO = issueRepository.findById(issueId)
+                .map(issueMapper::mapIssueToIssueDTO)
                 .orElseThrow(() -> new IssueNotFoundException("Issue with id: " + issueId + " not found"));
+        eventNotificationService.markNotificationAsRead(
+                issueId.toString(), EventType.ASSIGNED_TO_ISSUE, EventType.NEW_ISSUE, EventType.NEW_ISSUE_COMMENT);
+        return issueDTO;
     }
 
     @Override

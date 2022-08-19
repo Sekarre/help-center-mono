@@ -1,6 +1,7 @@
 package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.EventNotificationDTO;
+import com.sekarre.chatdemo.domain.enums.EventType;
 import com.sekarre.chatdemo.security.perms.EventNotificationPermission;
 import com.sekarre.chatdemo.services.EventNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class EventNotificationController {
     @EventNotificationPermission
     @PatchMapping("/{destinationId}")
     public void markEventNotificationAsRead(@PathVariable String destinationId, @RequestParam String eventType) {
-        eventNotificationService.markNotificationAsRead(destinationId, eventType);
+        eventNotificationService.markNotificationAsRead(destinationId, Enum.valueOf(EventType.class, eventType));
+    }
+
+    @GetMapping("/{destinationId}/count")
+    public Integer getEventNotificationCount(@PathVariable String destinationId, @RequestParam String eventType) {
+        return eventNotificationService.getNotificationCount(destinationId, Enum.valueOf(EventType.class, eventType));
     }
 }

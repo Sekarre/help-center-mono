@@ -23,6 +23,7 @@ public class IssueDTO {
     private IssueStatus issueStatus;
     private Long issueTypeId;
     private String channelId;
+    private Integer newNotificationsCount;
 
     @JsonFormat(pattern = DateUtil.DATE_TIME_FORMAT)
     private LocalDateTime createdAt;

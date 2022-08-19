@@ -47,9 +47,15 @@ public class EventNotificationServiceImpl implements EventNotificationService {
     }
 
     @Override
-    public void markNotificationAsRead(String destinationId, String eventType) {
+    public Integer getNotificationCount(String destinationId, EventType eventType) {
+        return eventNotificationRepository.countAllByDestinationIdAndEventTypeAndUserIdAndReadIsFalse(
+                destinationId, eventType, getCurrentUser().getId()).intValue();
+    }
+
+    @Override
+    public void markNotificationAsRead(String destinationId, EventType eventType) {
         List<EventNotification> eventNotifications = eventNotificationRepository
-                .findAllByDestinationIdAndUserIdAndEventType(destinationId, getCurrentUser().getId(), EventType.valueOf(eventType));
+                .findAllByDestinationIdAndUserIdAndEventType(destinationId, getCurrentUser().getId(), eventType);
         if (eventNotifications.isEmpty()) {
             return;
         }
@@ -58,6 +64,13 @@ public class EventNotificationServiceImpl implements EventNotificationService {
             eventNotification.setRead(true);
             eventNotificationRepository.save(eventNotification);
         });
+    }
+
+    @Override
+    public void markNotificationAsRead(String destinationId, EventType... eventTypes) {
+        for (EventType et : eventTypes) {
+            markNotificationAsRead(destinationId, et);
+        }
     }
 
     @Override

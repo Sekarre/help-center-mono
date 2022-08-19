@@ -11,7 +11,11 @@ public interface EventNotificationService {
 
     List<EventNotificationDTO> getAllUnreadNotifications();
 
-    void markNotificationAsRead(String destinationId, String eventType);
+    Integer getNotificationCount(String destinationId, EventType eventType);
+
+    void markNotificationAsRead(String destinationId, EventType eventType);
+
+    void markNotificationAsRead(String destinationId, EventType... eventType);
 
     void stopNotificationForDestination(String destinationId, Long userId, EventType eventType);
 
