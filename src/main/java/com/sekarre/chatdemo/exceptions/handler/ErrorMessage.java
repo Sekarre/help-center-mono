@@ -1,10 +1,11 @@
 package com.sekarre.chatdemo.exceptions.handler;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sekarre.chatdemo.util.DateUtil;
 import lombok.*;
 
 import java.time.LocalDateTime;
+
+import static com.sekarre.chatdemo.util.DateUtil.DATE_TIME_FORMAT;
 
 @Getter
 @Setter
@@ -15,6 +16,6 @@ public class ErrorMessage {
 
     private String cause;
 
-    @JsonFormat(pattern = DateUtil.DATE_TIME_FORMAT)
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime timestamp;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/event-notification")
+@RequestMapping(value = "/api/v1/event-notifications")
 public class EventNotificationController {
 
     private final EventNotificationService eventNotificationService;
