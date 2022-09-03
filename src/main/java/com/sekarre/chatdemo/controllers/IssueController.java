@@ -1,9 +1,14 @@
 package com.sekarre.chatdemo.controllers;
 
-import com.sekarre.chatdemo.DTO.*;
+import com.sekarre.chatdemo.DTO.issue.GroupedByStatusIssueDTO;
+import com.sekarre.chatdemo.DTO.issue.IssueDTO;
+import com.sekarre.chatdemo.DTO.issue.IssueStatusChangeDTO;
+import com.sekarre.chatdemo.DTO.issue.IssueTypeDTO;
+import com.sekarre.chatdemo.DTO.user.UserDTO;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;
+import com.sekarre.chatdemo.security.perms.AdminPermission;
 import com.sekarre.chatdemo.security.perms.IssuePermission;
-import com.sekarre.chatdemo.services.IssueService;
+import com.sekarre.chatdemo.services.issue.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -75,5 +80,12 @@ public class IssueController {
     @GetMapping("/{issueId}")
     public ResponseEntity<IssueDTO> getIssue(@PathVariable Long issueId) {
         return ResponseEntity.ok(issueService.getIssueById(issueId));
+    }
+
+    @AdminPermission
+    @DeleteMapping("/{issueId}")
+    public ResponseEntity<?> deleteIssue(@PathVariable Long issueId) {
+        issueService.deleteIssue(issueId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

@@ -1,7 +1,7 @@
 package com.sekarre.chatdemo.mappers;
 
-import com.sekarre.chatdemo.DTO.CommentCreateRequestDTO;
-import com.sekarre.chatdemo.DTO.CommentResponseDTO;
+import com.sekarre.chatdemo.DTO.comment.CommentCreateRequestDTO;
+import com.sekarre.chatdemo.DTO.comment.CommentResponseDTO;
 import com.sekarre.chatdemo.domain.Comment;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;

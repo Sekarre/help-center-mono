@@ -1,6 +1,6 @@
 package com.sekarre.chatdemo.factories;
 
-import com.sekarre.chatdemo.DTO.ChatMessageDTO;
+import com.sekarre.chatdemo.DTO.chat.ChatMessageDTO;
 
 import static com.sekarre.chatdemo.util.DateUtil.getCurrentDateTime;
 

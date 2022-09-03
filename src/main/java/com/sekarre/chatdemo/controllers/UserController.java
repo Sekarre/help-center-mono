@@ -1,7 +1,7 @@
 package com.sekarre.chatdemo.controllers;
 
-import com.sekarre.chatdemo.DTO.UserDTO;
-import com.sekarre.chatdemo.services.UserService;
+import com.sekarre.chatdemo.DTO.user.UserDTO;
+import com.sekarre.chatdemo.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -3,7 +3,7 @@ package com.sekarre.chatdemo.config;
 import com.sekarre.chatdemo.domain.User;
 import com.sekarre.chatdemo.repositories.UserRepository;
 import com.sekarre.chatdemo.security.jwt.JwtTokenUtil;
-import com.sekarre.chatdemo.services.security.ChatAuthorizationService;
+import com.sekarre.chatdemo.services.chat.security.ChatAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +43,7 @@ import static com.sekarre.chatdemo.util.SimpMessageHeaderUtil.getUserFromHeaders
 @Configuration
 public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer {
 
+    public static final String ERRORS = "errors";
 
     @Value("${spring.rabbitmq.login}")
     private String login;
@@ -95,36 +96,50 @@ public class WebSocketConfigRabbitMQ implements WebSocketMessageBrokerConfigurer
                 if (Objects.nonNull(accessor) && Objects.nonNull(accessor.getCommand())) {
                     switch (accessor.getCommand()) {
                         case CONNECT -> {
-                            String token = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION).split(" ")[1].trim();
-                            log.debug("Header auth token: " + token);
-
-                            if (!jwtTokenUtil.validate(token)) {
-                                return message;
-                            }
-
-                            User user = userRepository.findByUsername(jwtTokenUtil.getUsername(token))
-                                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-                            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                                    user, null, user.getAuthorities());
-
-                            SecurityContextHolder.getContext().setAuthentication(authentication);
-                            accessor.setUser(authentication);
+                            Message<?> message1 = onConnect(message, accessor);
+                            if (message1 != null) return message1;
                         }
-                        case SUBSCRIBE -> {
-                            SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(message);
-                            User user = getUserFromHeaders(headers);
-                            chatAuthorizationService.checkIfUserAuthorizedToJoinChannel(user, getChannelIdFromDestinationHeader(headers.getDestination()));
-                        }
-                        case DISCONNECT -> {
-                            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                            if (Objects.nonNull(authentication))
-                                log.info("Disconnected Auth : " + authentication.getName());
-                            else
-                                log.info("Disconnected Sess : " + accessor.getSessionId());
-                        }
+                        case SUBSCRIBE -> onSubscribe(message);
+                        case DISCONNECT -> onDisconnect(accessor);
                     }
                 }
                 return message;
+            }
+
+            private Message<?> onConnect(Message<?> message, StompHeaderAccessor accessor) {
+                String token = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION).split(" ")[1].trim();
+                log.debug("Header auth token: " + token);
+
+                if (!jwtTokenUtil.validate(token)) {
+                    return message;
+                }
+
+                User user = userRepository.findByUsername(jwtTokenUtil.getUsername(token))
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        user, null, user.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                accessor.setUser(authentication);
+                return null;
+            }
+
+            private void onDisconnect(StompHeaderAccessor accessor) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (Objects.nonNull(authentication)) {
+                    log.debug("Disconnected Auth : " + authentication.getName());
+                } else {
+                    log.debug("Disconnected Sess : " + accessor.getSessionId());
+                }
+            }
+
+            private void onSubscribe(Message<?> message) {
+                SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(message);
+                User user = getUserFromHeaders(headers);
+                String channelId = getChannelIdFromDestinationHeader(headers.getDestination());
+                if (!ERRORS.equals(channelId)) {
+                    chatAuthorizationService.checkIfUserAuthorizedToJoinChannel(user, getChannelIdFromDestinationHeader(headers.getDestination()));
+                }
             }
 
             @Override

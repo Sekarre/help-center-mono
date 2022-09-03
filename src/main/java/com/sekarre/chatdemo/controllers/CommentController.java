@@ -1,9 +1,9 @@
 package com.sekarre.chatdemo.controllers;
 
-import com.sekarre.chatdemo.DTO.CommentCreateRequestDTO;
-import com.sekarre.chatdemo.DTO.CommentResponseDTO;
+import com.sekarre.chatdemo.DTO.comment.CommentCreateRequestDTO;
+import com.sekarre.chatdemo.DTO.comment.CommentResponseDTO;
 import com.sekarre.chatdemo.security.perms.CommentPermission;
-import com.sekarre.chatdemo.services.CommentService;
+import com.sekarre.chatdemo.services.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

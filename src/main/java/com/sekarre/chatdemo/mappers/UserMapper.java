@@ -1,6 +1,6 @@
 package com.sekarre.chatdemo.mappers;
 
-import com.sekarre.chatdemo.DTO.UserDTO;
+import com.sekarre.chatdemo.DTO.user.UserDTO;
 import com.sekarre.chatdemo.domain.User;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;

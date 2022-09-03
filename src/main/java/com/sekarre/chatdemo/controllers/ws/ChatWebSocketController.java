@@ -1,7 +1,7 @@
 package com.sekarre.chatdemo.controllers.ws;
 
-import com.sekarre.chatdemo.DTO.ChatMessageDTO;
-import com.sekarre.chatdemo.services.ChatService;
+import com.sekarre.chatdemo.DTO.chat.ChatMessageDTO;
+import com.sekarre.chatdemo.services.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.*;

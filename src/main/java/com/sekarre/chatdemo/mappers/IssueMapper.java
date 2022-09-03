@@ -1,8 +1,8 @@
 package com.sekarre.chatdemo.mappers;
 
-import com.sekarre.chatdemo.DTO.IssueDTO;
-import com.sekarre.chatdemo.DTO.IssueStatusChangeDTO;
-import com.sekarre.chatdemo.DTO.IssueTypeDTO;
+import com.sekarre.chatdemo.DTO.issue.IssueDTO;
+import com.sekarre.chatdemo.DTO.issue.IssueStatusChangeDTO;
+import com.sekarre.chatdemo.DTO.issue.IssueTypeDTO;
 import com.sekarre.chatdemo.domain.Issue;
 import com.sekarre.chatdemo.domain.IssueType;
 import com.sekarre.chatdemo.domain.enums.IssueStatus;

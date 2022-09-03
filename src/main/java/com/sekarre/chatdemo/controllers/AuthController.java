@@ -1,7 +1,7 @@
 package com.sekarre.chatdemo.controllers;
 
 import com.sekarre.chatdemo.DTO.auth.UserCredentials;
-import com.sekarre.chatdemo.services.security.AuthService;
+import com.sekarre.chatdemo.services.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
